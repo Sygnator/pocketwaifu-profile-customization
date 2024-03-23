@@ -1,5 +1,5 @@
 {
-    "git.defaultBranchName": "master",
-    "git.enableSmartCommit": true,
-    "git.postCommitCommand": "sync"
+	"git.defaultBranchName": "master",
+	"git.enableSmartCommit": true,
+	"git.postCommitCommand": "sync"
 }
