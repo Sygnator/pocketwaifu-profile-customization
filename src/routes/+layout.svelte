@@ -1,9 +1,15 @@
 <!-- src/routes/+layout.svelte -->
-<script>
+<script lang="ts">
 	import '../app.pcss';
 
-	import DarkModeButton from '$lib/components/DarkModeButton.svelte';
+	import NavBar from '$lib/components/NavBar.svelte';
+	import SideBar from '$lib/components/SideBar.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 </script>
 
-<DarkModeButton />
-<slot />
+<NavBar />
+<SideBar />
+<main class="overflow-auto p-5">
+	<slot />
+</main>
+<Footer />
