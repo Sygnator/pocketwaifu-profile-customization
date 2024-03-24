@@ -7,7 +7,9 @@
 <Navbar rounded color="form">
 	<NavBrand href="/">
 		<img src="pwlogo.png" class="me-3 h-6 sm:h-9" alt="PocketWaifu Logo" />
-		<span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white"
+		<span
+			style="font-family: 'Lato'"
+			class="self-center whitespace-nowrap text-xl font-semibold dark:text-white"
 			>Profile customization</span
 		>
 	</NavBrand>

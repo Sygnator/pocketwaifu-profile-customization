@@ -106,6 +106,28 @@
 		context.fill();
 	}
 
+	async function drawText(
+		text: string,
+		x: number,
+		y: number,
+		context: CanvasRenderingContext2D,
+		color: string = '#a7a7a7',
+		size: number = 16,
+		font: string = 'Lato',
+		fontStyle: 'bold' | 'italic' | '' = '',
+		weight: 100 | 300 | 400 | 700 | 900 = 400
+	): Promise<void> {
+		const usedFont: FontFaceObserverOptions = new FontFaceObserver(font, {
+			weight: weight
+		});
+
+		await usedFont.load().then(() => {
+			context.fillStyle = color;
+			context.font = `${fontStyle} ${size}px ${font}`;
+			context.fillText(text, x, y);
+		});
+	}
+
 	async function drawAvatar(
 		image: HTMLImageElement,
 		avatarX: number,
@@ -167,48 +189,31 @@
 					context
 				);
 
-		// Nickname
-		const latoFont: FontFaceObserverOptions = new FontFaceObserver('Lato', {
-			weight: 400
-		});
-
-		let nX = 27;
-		nX += avatarX + tSize;
-		const nY = 103;
-
-		await latoFont.load().then(() => {
-			context.fillStyle = '#a7a7a7';
-			const nickFontSize: number = 28;
-			context.font = `bold ${nickFontSize}px Lato`;
-			context.fillText(nickname, nX, nY + (30 - nickFontSize) / 2 + nickFontSize);
-
-			context.fillStyle = '#7f7f7f';
-			const rangFontSize: number = 16;
-			context.font = `${rangFontSize}px Lato`;
-			context.fillText('Leniwiec', nX, nY + 32 + rangFontSize);
-		});
-	}
-
-	async function drowText(
-		text: string,
-		x: number,
-		y: number,
-		context: CanvasRenderingContext2D,
-		color: string = '#a7a7a7',
-		size: number = 16,
-		font: string = 'Lato',
-		fontStyle: 'bold' | 'italic' | '' = '',
-		weight: 100 | 300 | 400 | 700 | 900 = 400
-	): Promise<void> {
-		const fontO: FontFaceObserverOptions = new FontFaceObserver(font, {
-			weight: weight
-		});
-
-		await fontO.load().then(() => {
-			context.fillStyle = color;
-			context.font = `${fontStyle} ${size}px ${font}`;
-			context.fillText(text, x, y);
-		});
+		// Nickname & rank
+		let nickX = 27;
+		nickX += avatarX + tSize;
+		const nickY = 103;
+		const nickFontSize = 28;
+		await drawText(
+			nickname,
+			nickX,
+			nickY + (30 - nickFontSize) / 2 + nickFontSize,
+			context,
+			'#a7a7a7',
+			nickFontSize,
+			'Lato',
+			'bold'
+		);
+		const rankFontSize = 16;
+		await drawText(
+			'Leniwiec',
+			nickX,
+			nickY + 32 + rankFontSize,
+			context,
+			'#7f7f7f',
+			rankFontSize,
+			'Lato'
+		);
 	}
 
 	async function GetCurrencyImage(
@@ -220,7 +225,7 @@
 	): Promise<void> {
 		const img = await loadImage(`/profile_assets/${source}.png`);
 		await drawImage(img, x, y, 16, 16, context);
-		await drowText(text, x + 16 + 3.5, y + 14, context);
+		await drawText(text, x + 16 + 3.5, y + 14, context);
 	}
 
 	async function GetTopLevelImage(
@@ -246,7 +251,7 @@
 		}
 
 		// bar text
-		await drowText(
+		await drawText(
 			`${expOnLvl} / ${lvlExp}`,
 			x + 115 + 3,
 			y + 9 + 3,
