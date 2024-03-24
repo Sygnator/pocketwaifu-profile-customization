@@ -29,9 +29,56 @@
 		dw: number,
 		dh: number,
 		context: CanvasRenderingContext2D
-	) {
+	): Promise<void> {
 		await image.decode();
 		context.drawImage(image, dx, dy, dw, dh);
+	}
+
+	async function fillRect(
+		x: number,
+		y: number,
+		w: number,
+		h: number,
+		color: string,
+		context: CanvasRenderingContext2D
+	): Promise<void> {
+		context.fillStyle = color;
+		context.fillRect(x, y, w, h);
+	}
+
+	/**
+	 * Fills a rounded rectangle.
+	 *
+	 * @param x The X coordinate of the top left corner of the rectangle.
+	 * @param y The Y coordinate of the top left corner of the rectangle.
+	 * @param w The width of the rectangle.
+	 * @param h The height of the rectangle.
+	 * @param radius The radius of the rounded corners. **Specified in pixels.**
+	 * @param color The fill color in hexadecimal format (#RRGGBB).
+	 * @param context The canvas rendering context.
+	 */
+	async function fillRoundedRect(
+		x: number,
+		y: number,
+		w: number,
+		h: number,
+		radius: number,
+		color: string,
+		context: CanvasRenderingContext2D
+	): Promise<void> {
+		context.beginPath();
+		context.moveTo(x, y + radius);
+		context.arcTo(x, y, x + radius, y, radius);
+		context.lineTo(x + w - radius, y);
+		context.arcTo(x + w, y, x + w, y + radius, radius);
+		context.lineTo(x + w, y + h - radius);
+		context.arcTo(x + w, y + h, x + w - radius, y + h, radius);
+		context.lineTo(x + radius, y + h);
+		context.arcTo(x, y + h, x, y + h - radius, radius);
+		context.closePath();
+
+		context.fillStyle = color;
+		context.fill();
 	}
 
 	async function drawAvatar(
@@ -42,7 +89,7 @@
 		avatarBorderColor: string,
 		nickname: string,
 		context: CanvasRenderingContext2D
-	) {
+	): Promise<void> {
 		const borderSize = 2;
 		const tSize = avatarSize + borderSize * 2;
 		const gSize = 1;
@@ -84,14 +131,14 @@
 		});
 	}
 
-	async function loadProfile() {
+	async function loadProfile(): Promise<void> {
 		// Image background
 		const imgBg = await loadImage('/profile_assets/pbg.png');
 		await drawImage(imgBg, 0, 0, width, imgBg.height, context);
 
 		// Image shadow base
 		const imgBase = await loadImage('/profile_assets/pbase.png');
-		drawImage(imgBase, 0, 0, imgBase.width, imgBase.height, context);
+		await drawImage(imgBase, 0, 0, imgBase.width, imgBase.height, context);
 
 		// Avatar
 		const avatar = await loadImage('/profile_assets/user/avatar.png');
@@ -103,7 +150,12 @@
 		const avatarBorderColor = '#ff1122';
 		const nickname = 'Testowy user';
 
-		drawAvatar(avatar, avatarX, avatarY, avatarSize, avatarBorderColor, nickname, context);
+		await drawAvatar(avatar, avatarX, avatarY, avatarSize, avatarBorderColor, nickname, context);
+
+		// mini waifu card
+		const imgWaifu = await loadImage('/profile_assets/user/cards/1.webp');
+		await fillRoundedRect(618, 30, 85 + 8, 120 + 7, 8, '#00000050', context);
+		await drawImage(imgWaifu, 622, 34, 85, 120, context);
 	}
 
 	onMount(() => {
