@@ -34,6 +34,31 @@
 		context.drawImage(image, dx, dy, dw, dh);
 	}
 
+	async function drawRoundedImage(
+		image: HTMLImageElement,
+		dx: number,
+		dy: number,
+		dw: number,
+		dh: number,
+		radius: number,
+		context: CanvasRenderingContext2D
+	): Promise<void> {
+		await image.decode();
+
+		context.save();
+
+		context.clearRect(0, 0, 0, 0);
+
+		context.beginPath();
+		context.arc(dx + radius, dy + radius, radius, 0, Math.PI * 2);
+		context.closePath();
+		context.clip();
+
+		context.drawImage(image, dx, dy, dw, dh);
+
+		context.restore();
+	}
+
 	async function fillRect(
 		x: number,
 		y: number,
@@ -87,6 +112,7 @@
 		avatarY: number,
 		avatarSize: number,
 		avatarBorderColor: string,
+		hasRoundAvatar: boolean,
 		nickname: string,
 		context: CanvasRenderingContext2D
 	): Promise<void> {
@@ -97,15 +123,49 @@
 		await image.decode();
 
 		// Avatar back
-		context.fillStyle = '#3f3f3f';
-		context.fillRect(avatarX, avatarY, tSize, tSize);
+		hasRoundAvatar
+			? await fillRoundedRect(avatarX, avatarY, tSize, tSize, 40, '#3f3f3f', context)
+			: await fillRect(avatarX, avatarY, tSize, tSize, '#3f3f3f', context);
 
 		// Avatar border
-		context.fillStyle = avatarBorderColor;
-		context.fillRect(avatarX + gSize, avatarY + gSize, avatarSize + gOff, avatarSize + gOff);
+		hasRoundAvatar
+			? await fillRoundedRect(
+					avatarX + gSize,
+					avatarY + gSize,
+					avatarSize + gOff,
+					avatarSize + gOff,
+					40,
+					avatarBorderColor,
+					context
+				)
+			: await fillRect(
+					avatarX + gSize,
+					avatarY + gSize,
+					avatarSize + gOff,
+					avatarSize + gOff,
+					avatarBorderColor,
+					context
+				);
 
 		// Avatar image
-		context.drawImage(image, avatarX + borderSize, avatarY + borderSize, avatarSize, avatarSize);
+		hasRoundAvatar
+			? await drawRoundedImage(
+					image,
+					avatarX + borderSize,
+					avatarY + borderSize,
+					avatarSize,
+					avatarSize,
+					40,
+					context
+				)
+			: await drawImage(
+					image,
+					avatarX + borderSize,
+					avatarY + borderSize,
+					avatarSize,
+					avatarSize,
+					context
+				);
 
 		// Nickname
 		const latoFont: FontFaceObserverOptions = new FontFaceObserver('Lato', {
@@ -132,6 +192,9 @@
 	}
 
 	async function loadProfile(): Promise<void> {
+		// set background color
+		await fillRect(0, 0, width, height, background, context);
+
 		// Image background
 		const imgBg = await loadImage('/profile_assets/pbg.png');
 		await drawImage(imgBg, 0, 0, width, imgBg.height, context);
@@ -150,7 +213,18 @@
 		const avatarBorderColor = '#ff1122';
 		const nickname = 'Testowy user';
 
-		await drawAvatar(avatar, avatarX, avatarY, avatarSize, avatarBorderColor, nickname, context);
+		let hasRoundAvatar = false;
+
+		await drawAvatar(
+			avatar,
+			avatarX,
+			avatarY,
+			avatarSize,
+			avatarBorderColor,
+			hasRoundAvatar,
+			nickname,
+			context
+		);
 
 		// mini waifu card
 		const imgWaifu = await loadImage('/profile_assets/user/cards/1.webp');
@@ -167,4 +241,4 @@
 
 <svelte:window />
 
-<canvas {width} {height} style:background bind:this={canvas} />
+<canvas {width} {height} bind:this={canvas} />
