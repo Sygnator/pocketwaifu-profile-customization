@@ -177,8 +177,6 @@
 		const nY = 103;
 
 		await latoFont.load().then(() => {
-			console.log('test');
-
 			context.fillStyle = '#a7a7a7';
 			const nickFontSize: number = 28;
 			context.font = `bold ${nickFontSize}px Lato`;
@@ -189,6 +187,116 @@
 			context.font = `${rangFontSize}px Lato`;
 			context.fillText('Leniwiec', nX, nY + 32 + rangFontSize);
 		});
+	}
+
+	async function drowText(
+		text: string,
+		x: number,
+		y: number,
+		context: CanvasRenderingContext2D,
+		color: string = '#a7a7a7',
+		size: number = 16,
+		font: string = 'Lato',
+		fontStyle: 'bold' | 'italic' | '' = '',
+		weight: 100 | 300 | 400 | 700 | 900 = 400
+	): Promise<void> {
+		const fontO: FontFaceObserverOptions = new FontFaceObserver(font, {
+			weight: weight
+		});
+
+		await fontO.load().then(() => {
+			context.fillStyle = color;
+			context.font = `${fontStyle} ${size}px ${font}`;
+			context.fillText(text, x, y);
+		});
+	}
+
+	async function GetCurrencyImage(
+		source: string,
+		x: number,
+		y: number,
+		context: CanvasRenderingContext2D,
+		text: string = '100M'
+	): Promise<void> {
+		const img = await loadImage(`/profile_assets/${source}.png`);
+		await drawImage(img, x, y, 16, 16, context);
+		await drowText(text, x + 16 + 3.5, y + 14, context);
+	}
+
+	async function GetTopLevelImage(
+		x: number,
+		y: number,
+		context: CanvasRenderingContext2D
+	): Promise<void> {
+		GetCurrencyImage('mtop', x, y, context, '0');
+		GetCurrencyImage('mlvl', x + 60, y, context, '999');
+
+		// level
+		let expOnLvl = 12239;
+		let lvlExp = 16319;
+
+		// background
+		const barH = 14;
+		await fillRoundedRect(x + 114, y + 1, 74, barH, 2, '#3f3f3f', context);
+
+		// progress bar
+		let progressBarLength = 72 * (expOnLvl / lvlExp);
+		if (progressBarLength > 0) {
+			await fillRoundedRect(x + 115, y + 2, progressBarLength, barH - 2, 2, '#145DA0', context);
+		}
+
+		// bar text
+		await drowText(
+			`${expOnLvl} / ${lvlExp}`,
+			x + 115 + 3,
+			y + 9 + 3,
+			context,
+			'#FFFFFF',
+			10,
+			'Lato',
+			'bold'
+		);
+	}
+
+	async function drawProfileBar(
+		barTop: boolean,
+		barOpacity: number,
+		context: CanvasRenderingContext2D
+	): Promise<void> {
+		// profile bar background
+		await fillRoundedRect(
+			25,
+			barTop ? -16 : 476,
+			700,
+			40,
+			8,
+			`rgba(0, 0, 0, ${barOpacity})`,
+			context
+		);
+
+		const topBarY = barTop ? 3 : 480;
+		GetTopLevelImage(32, topBarY, context);
+
+		// coins
+		const coinOff = 84;
+		let coinX = 227 - coinOff;
+		// message icon
+		GetCurrencyImage('mmsg', (coinX += coinOff), topBarY, context);
+
+		// sc icon
+		GetCurrencyImage('msc', (coinX += coinOff), topBarY, context);
+
+		// tc icon
+		GetCurrencyImage('mtc', (coinX += coinOff), topBarY, context);
+
+		// ac icon
+		GetCurrencyImage('mac', (coinX += coinOff), topBarY, context);
+
+		// ct icon
+		GetCurrencyImage('mct', (coinX += coinOff), topBarY, context);
+
+		// pc icon
+		GetCurrencyImage('mpc', (coinX += coinOff), topBarY, context);
 	}
 
 	async function loadProfile(): Promise<void> {
@@ -230,6 +338,12 @@
 		const imgWaifu = await loadImage('/profile_assets/user/cards/1.webp');
 		await fillRoundedRect(618, 30, 85 + 8, 120 + 7, 8, '#00000050', context);
 		await drawImage(imgWaifu, 622, 34, 85, 120, context);
+
+		// profile bar
+		let barTop = false;
+		let barOpacity = 0.75;
+
+		await drawProfileBar(barTop, barOpacity, context);
 	}
 
 	onMount(() => {
