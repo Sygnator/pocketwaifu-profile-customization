@@ -1,3 +1,10 @@
+<script lang="ts" context="module">
+	export enum ProfileTypeEnum {
+		Cards,
+		MiniGallery
+	}
+</script>
+
 <script lang="ts">
 	import FontFaceObserver from 'fontfaceobserver';
 	import type FontFaceObserverOptions from 'fontfaceobserver';
@@ -319,7 +326,67 @@
 		}
 	}
 
+	async function drawMiniGallery(
+		context: CanvasRenderingContext2D,
+		isSmall: boolean = false,
+		isOnImg: boolean = false,
+		shadowsOpacity: number = 0.75,
+		flip: boolean = false
+	): Promise<void> {
+		let statsX = flip ? 407 : 16;
+		let statsY = 24 + 160;
+
+		if (isOnImg) {
+			await fillRoundedRect(
+				statsX - 3,
+				statsY - 3,
+				331,
+				275,
+				8,
+				`rgba(0, 0, 0, ${shadowsOpacity})`,
+				context
+			);
+		}
+
+		const startX = statsX + (isSmall ? 6 : 12);
+		const cardGap = isSmall ? 160 : 104;
+		const cardSizeW = isSmall ? 152 : 93;
+		const cardSizeH = isSmall ? 215 : 131;
+		let cardY = statsY + (isSmall ? 26 : 2);
+		let cardX = startX;
+
+		for (let i = 1; i <= (isSmall ? 2 : 6); i++) {
+			const cardImg = await loadImage(`/profile_assets/user/cards/${i}.webp`);
+			drawImage(cardImg, cardX, cardY, cardSizeW, cardSizeH, context);
+			cardX += cardGap;
+			if (cardX > cardGap * 2 + startX) {
+				cardX = startX;
+				cardY += 135;
+			}
+		}
+	}
+
+	async function drawProfile(
+		profileType: ProfileTypeEnum,
+		shadowsOpacity: number,
+		context: CanvasRenderingContext2D
+	): Promise<void> {
+		switch (profileType) {
+			case ProfileTypeEnum.Cards:
+				drawCards(context);
+				break;
+			case ProfileTypeEnum.MiniGallery:
+				drawMiniGallery(context);
+				break;
+			default:
+				break;
+		}
+	}
+
 	async function loadProfile(): Promise<void> {
+		// global opacity
+		let shadowsOpacity = 0.4;
+
 		// set background color
 		await fillRect(0, 0, width, height, background, context);
 
@@ -366,19 +433,9 @@
 		await drawProfileBar(barTop, barOpacity, context);
 
 		// profil type
-		enum ProfileTypeEnum {
-			Cards
-		}
 
-		let profileType = ProfileTypeEnum.Cards;
-		switch (profileType) {
-			case ProfileTypeEnum.Cards:
-				drawCards(context);
-				break;
-
-			default:
-				break;
-		}
+		let profileType = ProfileTypeEnum.MiniGallery;
+		await drawProfile(profileType, shadowsOpacity, context);
 	}
 
 	onMount(() => {
