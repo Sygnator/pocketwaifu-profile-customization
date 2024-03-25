@@ -2,7 +2,8 @@
 	export enum ProfileTypeEnum {
 		Cards,
 		MiniGallery,
-		ShowCards
+		ShowCards,
+		Stats
 	}
 	export enum karmaState {
 		Demon = 'kd',
@@ -387,7 +388,6 @@
 
 	async function drawWaifuProfile(
 		context: CanvasRenderingContext2D,
-		isSmall: boolean = false,
 		isOnImg: boolean = false,
 		shadowsOpacity: number = 0.75,
 		flip: boolean = false,
@@ -458,6 +458,50 @@
 		GetCurrencyImage('mbor', startX + sGap, startY, context, '10');
 	}
 
+	async function drawStats(
+		context: CanvasRenderingContext2D,
+		isOnImg: boolean = false,
+		shadowsOpacity: number = 0.75,
+		showAnime: boolean = true,
+		showManga: boolean = true,
+		flip: boolean = false
+	): Promise<void> {
+		let statsX = flip ? 407 : 16;
+		let statsY = 24 + 160;
+
+		if (showAnime) {
+			if (isOnImg) {
+				await fillRoundedRect(
+					statsX - 3,
+					statsY - 3,
+					325 + 6,
+					122 + 6,
+					8,
+					`rgba(0, 0, 0, ${shadowsOpacity})`,
+					context
+				);
+			}
+			const animeImg = await loadImage('/profile_assets/user/statsAnimePlaceholder.png');
+			drawImage(animeImg, statsX, statsY, 325, 122, context);
+			statsY += 147;
+		}
+		if (showManga) {
+			if (isOnImg) {
+				await fillRoundedRect(
+					statsX - 3,
+					statsY - 3,
+					325 + 6,
+					122 + 6,
+					8,
+					`rgba(0, 0, 0, ${shadowsOpacity})`,
+					context
+				);
+			}
+			const mangaImg = await loadImage('/profile_assets/user/statsMangaPlaceholder.png');
+			drawImage(mangaImg, statsX, statsY, 325, 122, context);
+		}
+	}
+
 	async function drawProfile(
 		profileType: ProfileTypeEnum,
 		shadowsOpacity: number,
@@ -471,7 +515,10 @@
 			case ProfileTypeEnum.MiniGallery:
 			case ProfileTypeEnum.ShowCards:
 				drawMiniGallery(context, false, true, 0.4, flip);
-				drawWaifuProfile(context, true, true, 0.4, flip);
+				drawWaifuProfile(context, true, 0.4, flip);
+				break;
+			case ProfileTypeEnum.Stats:
+				drawStats(context, true, 0.4);
 				break;
 			default:
 				break;
@@ -529,7 +576,7 @@
 
 		// profil type
 
-		let profileType = ProfileTypeEnum.ShowCards;
+		let profileType = ProfileTypeEnum.Stats;
 		let flip = false;
 		await drawProfile(profileType, shadowsOpacity, context, flip);
 	}
