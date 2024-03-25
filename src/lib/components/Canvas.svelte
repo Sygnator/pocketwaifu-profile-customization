@@ -304,6 +304,21 @@
 		GetCurrencyImage('mpc', (coinX += coinOff), topBarY, context);
 	}
 
+	async function drawCards(context: CanvasRenderingContext2D): Promise<void> {
+		let cardX = 4 + 15;
+		let cardY = 19 + 160 - 15;
+
+		for (let i = 1; i <= 12; i++) {
+			const cardImg = await loadImage(`/profile_assets/user/cards/${i}.webp`);
+			drawImage(cardImg, cardX, cardY, 107, 150, context);
+			cardX += 121;
+			if (cardX > 730) {
+				cardX = 19;
+				cardY += 155;
+			}
+		}
+	}
+
 	async function loadProfile(): Promise<void> {
 		// set background color
 		await fillRect(0, 0, width, height, background, context);
@@ -349,6 +364,21 @@
 		let barOpacity = 0.75;
 
 		await drawProfileBar(barTop, barOpacity, context);
+
+		// profil type
+		enum ProfileTypeEnum {
+			Cards
+		}
+
+		let profileType = ProfileTypeEnum.Cards;
+		switch (profileType) {
+			case ProfileTypeEnum.Cards:
+				drawCards(context);
+				break;
+
+			default:
+				break;
+		}
 	}
 
 	onMount(() => {
