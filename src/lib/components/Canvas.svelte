@@ -21,6 +21,27 @@
 		D = 'D',
 		E = 'E'
 	}
+
+	export enum AvatarBorder {
+		None = 'None',
+		Base = 'Base',
+		PurpleLeaves = 'PurpleLeaves',
+		Dzedai = 'Dzedai',
+		Water = 'Water',
+		Crows = 'Crows',
+		Bow = 'Bow',
+		Metal = 'Metal',
+		RedThinLeaves = 'RedThinLeaves',
+		Skull = 'Skull',
+		Fire = 'Fire',
+		Ice = 'Ice',
+		Promium = 'Promium',
+		Gold = 'Gold',
+		Red = 'Red',
+		Rainbow = 'Rainbow',
+		Pink = 'Pink',
+		Simple = 'Simple'
+	}
 </script>
 
 <script lang="ts">
@@ -155,6 +176,78 @@
 		});
 	}
 
+	async function drawProfileAvatarBorder(
+		avatarBorder: AvatarBorder,
+		levelBorder: typeLevelBorder,
+		context: CanvasRenderingContext2D
+	): Promise<void> {
+		let abImg: HTMLImageElement;
+		if (avatarBorder === AvatarBorder.Base && levelBorder) {
+			abImg = await loadImage(`/profile_assets/avatar_border/level/${levelBorder}.png`);
+		} else {
+			abImg = await loadImage(`/profile_assets/avatar_border/${avatarBorder}.png`);
+		}
+
+		let pos = { x: 24, y: 39 };
+
+		// get positon
+		switch (avatarBorder) {
+			case AvatarBorder.Bow:
+				pos = { x: 26, y: 48 };
+				break;
+			case AvatarBorder.Dzedai:
+				pos = { x: 23, y: 38 };
+				break;
+			case AvatarBorder.Water:
+				pos = { x: 35, y: 58 };
+				break;
+			case AvatarBorder.Base:
+				pos = { x: 43, y: 59 };
+				break;
+			case AvatarBorder.Crows:
+				pos = { x: 25, y: 42 };
+				break;
+			case AvatarBorder.Metal:
+				pos = { x: 49, y: 65 };
+				break;
+			case AvatarBorder.RedThinLeaves:
+				pos = { x: 30, y: 44 };
+				break;
+			case AvatarBorder.Skull:
+				pos = { x: 28, y: 47 };
+				break;
+			case AvatarBorder.Fire:
+				pos = { x: 45, y: 60 };
+				break;
+			case AvatarBorder.Promium:
+				pos = { x: 38, y: 53 };
+				break;
+			case AvatarBorder.Ice:
+				pos = { x: 44, y: 61 };
+				break;
+			case AvatarBorder.Gold:
+				pos = { x: 18, y: 33 };
+				break;
+			case AvatarBorder.Red:
+				pos = { x: 40, y: 58 };
+				break;
+			case AvatarBorder.Rainbow:
+				pos = { x: 44, y: 60 };
+				break;
+			case AvatarBorder.Pink:
+				pos = { x: 38, y: 53 };
+				break;
+			case AvatarBorder.Simple:
+				pos = { x: 36, y: 53 };
+				break;
+			default:
+				pos = { x: 24, y: 39 };
+				break;
+		}
+
+		drawImage(abImg, pos.x, pos.y, abImg.width, abImg.height, context);
+	}
+
 	async function drawAvatar(
 		image: HTMLImageElement,
 		avatarX: number,
@@ -163,7 +256,9 @@
 		avatarBorderColor: string,
 		hasRoundAvatar: boolean,
 		nickname: string,
-		context: CanvasRenderingContext2D
+		context: CanvasRenderingContext2D,
+		avatarBorder: AvatarBorder = AvatarBorder.None,
+		levelBorder: typeLevelBorder = false
 	): Promise<void> {
 		const borderSize = 2;
 		const tSize = avatarSize + borderSize * 2;
@@ -171,50 +266,66 @@
 		const gOff = gSize * 2;
 		await image.decode();
 
+		let hasAvatarBorder = avatarBorder === AvatarBorder.None ? false : true;
+
+		if (hasAvatarBorder) hasRoundAvatar = true;
+		let radius = 40;
+
 		// Avatar back
-		hasRoundAvatar
-			? await fillRoundedRect(avatarX, avatarY, tSize, tSize, 40, '#3f3f3f', context)
-			: await fillRect(avatarX, avatarY, tSize, tSize, '#3f3f3f', context);
+		if (hasRoundAvatar) {
+			await fillRoundedRect(avatarX, avatarY, tSize, tSize, radius, '#3f3f3f', context);
+		} else {
+			await fillRect(avatarX, avatarY, tSize, tSize, '#3f3f3f', context);
+		}
 
 		// Avatar border
-		hasRoundAvatar
-			? await fillRoundedRect(
-					avatarX + gSize,
-					avatarY + gSize,
-					avatarSize + gOff,
-					avatarSize + gOff,
-					40,
-					avatarBorderColor,
-					context
-				)
-			: await fillRect(
-					avatarX + gSize,
-					avatarY + gSize,
-					avatarSize + gOff,
-					avatarSize + gOff,
-					avatarBorderColor,
-					context
-				);
+		if (hasRoundAvatar) {
+			await fillRoundedRect(
+				avatarX + gSize,
+				avatarY + gSize,
+				avatarSize + gOff,
+				avatarSize + gOff,
+				radius,
+				avatarBorderColor,
+				context
+			);
+		} else {
+			await fillRect(
+				avatarX + gSize,
+				avatarY + gSize,
+				avatarSize + gOff,
+				avatarSize + gOff,
+				avatarBorderColor,
+				context
+			);
+		}
 
 		// Avatar image
-		hasRoundAvatar
-			? await drawRoundedImage(
-					image,
-					avatarX + borderSize,
-					avatarY + borderSize,
-					avatarSize,
-					avatarSize,
-					40,
-					context
-				)
-			: await drawImage(
-					image,
-					avatarX + borderSize,
-					avatarY + borderSize,
-					avatarSize,
-					avatarSize,
-					context
-				);
+		if (hasRoundAvatar) {
+			await drawRoundedImage(
+				image,
+				avatarX + borderSize,
+				avatarY + borderSize,
+				avatarSize,
+				avatarSize,
+				radius,
+				context
+			);
+		} else {
+			await drawImage(
+				image,
+				avatarX + borderSize,
+				avatarY + borderSize,
+				avatarSize,
+				avatarSize,
+				context
+			);
+		}
+
+		// custom avatar border
+		if (hasAvatarBorder) {
+			drawProfileAvatarBorder(avatarBorder, levelBorder, context);
+		}
 
 		// Nickname & rank
 		let nickX = 27;
@@ -550,7 +661,7 @@
 		const avatarBorderColor = '#ff1122';
 		const nickname = 'Testowy user';
 
-		let hasRoundAvatar = false;
+		let hasRoundAvatar = true;
 
 		await drawAvatar(
 			avatar,
@@ -560,7 +671,8 @@
 			avatarBorderColor,
 			hasRoundAvatar,
 			nickname,
-			context
+			context,
+			AvatarBorder.Dzedai
 		);
 
 		// mini waifu card
