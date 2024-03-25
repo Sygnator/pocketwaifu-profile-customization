@@ -1,11 +1,30 @@
 <script lang="ts" context="module">
 	export enum ProfileTypeEnum {
 		Cards,
-		MiniGallery
+		MiniGallery,
+		ShowCards
+	}
+	export enum karmaState {
+		Demon = 'kd',
+		Neutral = 'kn',
+		Angel = 'kl'
+	}
+
+	export enum cardRarity {
+		SSS = 'SSS',
+		SS = 'SS',
+		S = 'S',
+		A = 'A',
+		B = 'B',
+		C = 'C',
+		D = 'D',
+		E = 'E'
 	}
 </script>
 
 <script lang="ts">
+	import { FlowbiteSolid } from 'flowbite-svelte-icons';
+
 	import FontFaceObserver from 'fontfaceobserver';
 	import type FontFaceObserverOptions from 'fontfaceobserver';
 
@@ -366,17 +385,93 @@
 		}
 	}
 
+	async function drawWaifuProfile(
+		context: CanvasRenderingContext2D,
+		isSmall: boolean = false,
+		isOnImg: boolean = false,
+		shadowsOpacity: number = 0.75,
+		flip: boolean = false,
+		karma: karmaState = karmaState.Angel
+	): Promise<void> {
+		let statsX = flip ? 407 - 391 : 16 + 352;
+		let statsY = 24 + 160;
+
+		if (isOnImg) {
+			await fillRoundedRect(
+				statsX - 3,
+				statsY - 3,
+				370,
+				275,
+				8,
+				`rgba(0, 0, 0, ${shadowsOpacity})`,
+				context
+			);
+		}
+
+		// waifu card
+		const cardImage = await loadImage('/profile_assets/user/cards/1.webp');
+		await drawImage(cardImage, statsX + 10, statsY + 4, 185, 260, context);
+
+		// top stats
+		const fontColor = '#a7a7a7';
+
+		let oGap = 60;
+		let startX = statsX + 213;
+		let startY = statsY + 18;
+		drawText('Posiadane', startX, startY + 8 - 10, context, '#7f7f7f', 9, 'Lato', 'bold');
+		drawText('Limit', startX + oGap, startY + 8 - 10, context, '#7f7f7f', 9, 'Lato', 'bold');
+		drawText('20691', startX, startY + 15, context, fontColor, 16, 'Lato', 'bold');
+		drawText('99999', startX + oGap, startY + 15, context, fontColor, 16, 'Lato', 'bold');
+
+		// karma
+		const karmaImg = await loadImage(`/profile_assets/${karmaState.Demon}.png`);
+		drawImage(karmaImg, statsX + 330, startY - 6, 22, 21, context);
+
+		// cards stats
+		startY += 29;
+		let cGap = 38;
+		let jumpY = 24;
+
+		for (const r of Object.values(cardRarity)) {
+			const cImg = await loadImage(`/profile_assets/r${r}.png`);
+			drawImage(cImg, startX, startY, 33, 20, context);
+			drawText(
+				`${Math.abs((startY - 257) * 36)}`,
+				startX + cGap,
+				startY + 16,
+				context,
+				fontColor,
+				17,
+				'Lato',
+				'bold'
+			);
+			startY += jumpY;
+		}
+
+		startY = statsY + 246;
+		const sGap = 84;
+
+		// scalpel
+		GetCurrencyImage('mscal', startX, startY, context, '99');
+
+		// scissors
+		GetCurrencyImage('mbor', startX + sGap, startY, context, '10');
+	}
+
 	async function drawProfile(
 		profileType: ProfileTypeEnum,
 		shadowsOpacity: number,
-		context: CanvasRenderingContext2D
+		context: CanvasRenderingContext2D,
+		flip: boolean = false
 	): Promise<void> {
 		switch (profileType) {
 			case ProfileTypeEnum.Cards:
 				drawCards(context);
 				break;
 			case ProfileTypeEnum.MiniGallery:
-				drawMiniGallery(context);
+			case ProfileTypeEnum.ShowCards:
+				drawMiniGallery(context, false, true, 0.4, flip);
+				drawWaifuProfile(context, true, true, 0.4, flip);
 				break;
 			default:
 				break;
@@ -434,8 +529,9 @@
 
 		// profil type
 
-		let profileType = ProfileTypeEnum.MiniGallery;
-		await drawProfile(profileType, shadowsOpacity, context);
+		let profileType = ProfileTypeEnum.ShowCards;
+		let flip = false;
+		await drawProfile(profileType, shadowsOpacity, context, flip);
 	}
 
 	onMount(() => {
