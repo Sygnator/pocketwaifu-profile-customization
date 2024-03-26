@@ -1,61 +1,23 @@
-<script lang="ts" context="module">
-	export enum ProfileTypeEnum {
-		Cards,
-		MiniGallery,
-		ShowCards,
-		Stats
-	}
-	export enum karmaState {
-		Demon = 'kd',
-		Neutral = 'kn',
-		Angel = 'kl'
-	}
-
-	export enum cardRarity {
-		SSS = 'SSS',
-		SS = 'SS',
-		S = 'S',
-		A = 'A',
-		B = 'B',
-		C = 'C',
-		D = 'D',
-		E = 'E'
-	}
-
-	export enum AvatarBorder {
-		None = 'None',
-		Base = 'Base',
-		PurpleLeaves = 'PurpleLeaves',
-		Dzedai = 'Dzedai',
-		Water = 'Water',
-		Crows = 'Crows',
-		Bow = 'Bow',
-		Metal = 'Metal',
-		RedThinLeaves = 'RedThinLeaves',
-		Skull = 'Skull',
-		Fire = 'Fire',
-		Ice = 'Ice',
-		Promium = 'Promium',
-		Gold = 'Gold',
-		Red = 'Red',
-		Rainbow = 'Rainbow',
-		Pink = 'Pink',
-		Simple = 'Simple'
-	}
-</script>
-
 <script lang="ts">
 	import { FlowbiteSolid } from 'flowbite-svelte-icons';
+	import {
+		ProfileTypeEnum,
+		KarmaState,
+		CardRarity,
+		AvatarBorder,
+		type LevelBorderType
+	} from '$lib/index';
 
 	import FontFaceObserver from 'fontfaceobserver';
 	import type FontFaceObserverOptions from 'fontfaceobserver';
 
 	import { onMount } from 'svelte';
 
+	import { profileConfig } from '$lib/profileConfig';
+
 	export let width = 750;
 	export let height = 500;
 	export let background = '#313338';
-	// export let color = '#7f7f7f';
 
 	let canvas: HTMLCanvasElement;
 
@@ -178,7 +140,7 @@
 
 	async function drawProfileAvatarBorder(
 		avatarBorder: AvatarBorder,
-		levelBorder: typeLevelBorder,
+		levelBorder: LevelBorderType,
 		context: CanvasRenderingContext2D
 	): Promise<void> {
 		let abImg: HTMLImageElement;
@@ -258,7 +220,7 @@
 		nickname: string,
 		context: CanvasRenderingContext2D,
 		avatarBorder: AvatarBorder = AvatarBorder.None,
-		levelBorder: typeLevelBorder = false
+		levelBorder: LevelBorderType = false
 	): Promise<void> {
 		const borderSize = 2;
 		const tSize = avatarSize + borderSize * 2;
@@ -502,7 +464,7 @@
 		isOnImg: boolean = false,
 		shadowsOpacity: number = 0.75,
 		flip: boolean = false,
-		karma: karmaState = karmaState.Angel
+		karma: KarmaState = KarmaState.Angel
 	): Promise<void> {
 		let statsX = flip ? 407 - 391 : 16 + 352;
 		let statsY = 24 + 160;
@@ -535,7 +497,7 @@
 		drawText('99999', startX + oGap, startY + 15, context, fontColor, 16, 'Lato', 'bold');
 
 		// karma
-		const karmaImg = await loadImage(`/profile_assets/${karmaState.Demon}.png`);
+		const karmaImg = await loadImage(`/profile_assets/${karma}.png`);
 		drawImage(karmaImg, statsX + 330, startY - 6, 22, 21, context);
 
 		// cards stats
@@ -543,7 +505,7 @@
 		let cGap = 38;
 		let jumpY = 24;
 
-		for (const r of Object.values(cardRarity)) {
+		for (const r of Object.values(CardRarity)) {
 			const cImg = await loadImage(`/profile_assets/r${r}.png`);
 			drawImage(cImg, startX, startY, 33, 20, context);
 			drawText(
@@ -625,11 +587,11 @@
 				break;
 			case ProfileTypeEnum.MiniGallery:
 			case ProfileTypeEnum.ShowCards:
-				drawMiniGallery(context, false, true, 0.4, flip);
-				drawWaifuProfile(context, true, 0.4, flip);
+				drawMiniGallery(context, false, true, shadowsOpacity, flip);
+				drawWaifuProfile(context, true, shadowsOpacity, flip, $profileConfig.karma);
 				break;
 			case ProfileTypeEnum.Stats:
-				drawStats(context, true, 0.4);
+				drawStats(context, true, shadowsOpacity);
 				break;
 			default:
 				break;
@@ -637,9 +599,6 @@
 	}
 
 	async function loadProfile(): Promise<void> {
-		// global opacity
-		let shadowsOpacity = 0.4;
-
 		// set background color
 		await fillRect(0, 0, width, height, background, context);
 
@@ -658,45 +617,45 @@
 		const avatarY = 68;
 		const avatarSize = 80;
 
-		const avatarBorderColor = '#ff1122';
 		const nickname = 'Testowy user';
-
-		let hasRoundAvatar = true;
 
 		await drawAvatar(
 			avatar,
 			avatarX,
 			avatarY,
 			avatarSize,
-			avatarBorderColor,
-			hasRoundAvatar,
+			$profileConfig.avatarBorderColor,
+			$profileConfig.hasRoundAvatar,
 			nickname,
 			context,
-			AvatarBorder.Dzedai
+			$profileConfig.avatarBorder
 		);
 
 		// mini waifu card
-		const imgWaifu = await loadImage('/profile_assets/user/cards/1.webp');
-		await fillRoundedRect(618, 30, 85 + 8, 120 + 7, 8, '#00000050', context);
-		await drawImage(imgWaifu, 622, 34, 85, 120, context);
+		if ($profileConfig.miniWaifu) {
+			const imgWaifu = await loadImage('/profile_assets/user/cards/1.webp');
+			await fillRoundedRect(618, 30, 85 + 8, 120 + 7, 8, '#00000050', context);
+			await drawImage(imgWaifu, 622, 34, 85, 120, context);
+		}
 
 		// profile bar
-		let barTop = false;
-		let barOpacity = 0.75;
-
-		await drawProfileBar(barTop, barOpacity, context);
+		await drawProfileBar($profileConfig.barTop, $profileConfig.barOpacity, context);
 
 		// profil type
-
-		let profileType = ProfileTypeEnum.Stats;
-		let flip = false;
-		await drawProfile(profileType, shadowsOpacity, context, flip);
+		await drawProfile(
+			$profileConfig.profileType,
+			$profileConfig.shadowsOpacity,
+			context,
+			$profileConfig.flip
+		);
 	}
 
 	onMount(() => {
 		context = canvas.getContext('2d')!;
 
-		loadProfile();
+		profileConfig.subscribe(() => {
+			loadProfile();
+		});
 	});
 </script>
 
