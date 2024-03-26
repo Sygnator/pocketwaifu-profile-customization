@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { FlowbiteSolid } from 'flowbite-svelte-icons';
 	import {
 		ProfileTypeEnum,
 		KarmaState,
