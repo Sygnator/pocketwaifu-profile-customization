@@ -39,4 +39,4 @@
 		</SidebarGroup>
 	</SidebarWrapper>
 </Sidebar>
-<ChooseCustomBorder {openModal} />
+<ChooseCustomBorder bind:openModal />

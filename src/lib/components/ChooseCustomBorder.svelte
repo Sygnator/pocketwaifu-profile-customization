@@ -1,11 +1,9 @@
-<script>
+<script lang="ts">
 	import { AvatarBorder } from '$lib';
 	import { profileConfig } from '$lib/profileConfig';
-	import { Button, Modal, Card } from 'flowbite-svelte';
-	export let openModal = false;
+	import { Modal, Card } from 'flowbite-svelte';
+	export let openModal: boolean;
 </script>
-
-<!-- <Button on:click={() => (openModal = true)}>Default modal</Button> -->
 
 <Modal
 	title="Ramka avatara"
