@@ -8,11 +8,17 @@ export type ProfileConfigType = {
 	miniWaifu: boolean;
 	flip: boolean;
 	barTop: boolean;
-	barOpacity: number;
+	barOpacity: boolean;
 	shadowsOpacity: number;
 	levelBorder: LevelBorderType;
 	avatarBorderColor: string;
 	hasRoundAvatar: boolean;
+	cardsStats: boolean;
+	miniGallery: boolean;
+	isSmall: boolean;
+	animeStats: boolean;
+	mangaStats: boolean;
+	cardsAmount: number;
 };
 
 export function createProfileConfig(profileConfig: ProfileConfigType) {
@@ -46,8 +52,8 @@ export function createProfileConfig(profileConfig: ProfileConfigType) {
 		update((profileConfig) => ({ ...profileConfig, barTop: !profileConfig.barTop }));
 	}
 
-	function setBarOpacity(barOpacity: number) {
-		update((profileConfig) => ({ ...profileConfig, barOpacity: barOpacity }));
+	function switchBarOpacity() {
+		update((profileConfig) => ({ ...profileConfig, barOpacity: !profileConfig.barOpacity }));
 	}
 
 	function setShadowsOpacity(shadowsOpacity: number) {
@@ -69,6 +75,30 @@ export function createProfileConfig(profileConfig: ProfileConfigType) {
 		}));
 	}
 
+	function switchMiniGallery() {
+		update((profileConfig) => ({ ...profileConfig, miniGallery: !profileConfig.miniGallery }));
+	}
+
+	function switchCardsStats() {
+		update((profileConfig) => ({ ...profileConfig, cardsStats: !profileConfig.cardsStats }));
+	}
+
+	function switchIsSmall() {
+		update((profileConfig) => ({ ...profileConfig, isSmall: !profileConfig.isSmall }));
+	}
+
+	function switchAnimeStats() {
+		update((profileConfig) => ({ ...profileConfig, animeStats: !profileConfig.animeStats }));
+	}
+
+	function switchMangaStats() {
+		update((profileConfig) => ({ ...profileConfig, mangaStats: !profileConfig.mangaStats }));
+	}
+
+	function setCardsAmount(cardsAmount: number) {
+		update((profileConfig) => ({ ...profileConfig, cardsAmount: cardsAmount }));
+	}
+
 	return {
 		subscribe,
 		setProfileConfig,
@@ -78,25 +108,37 @@ export function createProfileConfig(profileConfig: ProfileConfigType) {
 		switchMiniWaifu,
 		switchFlip,
 		switchBarTop,
-		setBarOpacity,
+		switchBarOpacity,
 		setShadowsOpacity,
 		setLevelBorder,
 		setAvatarBorderColor,
-		switchRoundAvatar
+		switchRoundAvatar,
+		switchMiniGallery,
+		switchCardsStats,
+		switchIsSmall,
+		switchAnimeStats,
+		switchMangaStats,
+		setCardsAmount
 	};
 }
 
 // basic configuration
 export const profileConfig = createProfileConfig({
-	profileType: ProfileTypeEnum.MiniGallery,
+	profileType: ProfileTypeEnum.ShowCards,
 	karma: KarmaState.Angel,
 	avatarBorder: AvatarBorder.Crows,
 	miniWaifu: false,
 	flip: true,
 	barTop: false,
-	barOpacity: 0.75,
+	barOpacity: true,
 	shadowsOpacity: 0.3,
 	levelBorder: false,
 	avatarBorderColor: '#ff1122',
-	hasRoundAvatar: false
+	hasRoundAvatar: false,
+	cardsStats: true,
+	miniGallery: true,
+	isSmall: false,
+	animeStats: true,
+	mangaStats: true,
+	cardsAmount: 12
 });

@@ -364,8 +364,9 @@
 
 	async function drawProfileBar(
 		barTop: boolean,
-		barOpacity: number,
-		context: CanvasRenderingContext2D
+		barOpacity: boolean,
+		context: CanvasRenderingContext2D,
+		shadowsOpacity: number = 0.7
 	): Promise<void> {
 		// profile bar background
 		await fillRoundedRect(
@@ -374,7 +375,7 @@
 			700,
 			40,
 			8,
-			`rgba(0, 0, 0, ${barOpacity})`,
+			`rgba(0, 0, 0, ${barOpacity ? shadowsOpacity : '0.75'})`,
 			context
 		);
 
@@ -403,11 +404,15 @@
 		GetCurrencyImage('mpc', (coinX += coinOff), topBarY, context);
 	}
 
-	async function drawCards(context: CanvasRenderingContext2D): Promise<void> {
+	async function drawCards(context: CanvasRenderingContext2D, cardsAmount: number): Promise<void> {
 		let cardX = 4 + 15;
 		let cardY = 19 + 160 - 15;
 
-		for (let i = 1; i <= 12; i++) {
+		if (cardsAmount > 12 || cardsAmount < 0) {
+			cardsAmount = 12;
+		}
+
+		for (let i = 1; i <= cardsAmount; i++) {
 			const cardImg = await loadImage(`/profile_assets/user/cards/${i}.webp`);
 			drawImage(cardImg, cardX, cardY, 107, 150, context);
 			cardX += 121;
@@ -582,16 +587,27 @@
 	): Promise<void> {
 		switch (profileType) {
 			case ProfileTypeEnum.Cards:
-				drawCards(context);
+				drawCards(context, $profileConfig.cardsAmount);
 				break;
 			case ProfileTypeEnum.MiniGallery:
 			case ProfileTypeEnum.ShowCards:
-				drawMiniGallery(context, false, true, shadowsOpacity, flip);
-				drawWaifuProfile(context, true, shadowsOpacity, flip, $profileConfig.karma);
+				if ($profileConfig.miniGallery)
+					drawMiniGallery(context, $profileConfig.isSmall, true, shadowsOpacity, flip);
+
+				if ($profileConfig.cardsStats)
+					drawWaifuProfile(context, true, shadowsOpacity, flip, $profileConfig.karma);
 				break;
 			case ProfileTypeEnum.Stats:
-				drawStats(context, true, shadowsOpacity);
+				drawStats(
+					context,
+					true,
+					shadowsOpacity,
+					$profileConfig.animeStats,
+					$profileConfig.mangaStats,
+					$profileConfig.flip
+				);
 				break;
+			case ProfileTypeEnum.Img:
 			default:
 				break;
 		}
@@ -639,7 +655,12 @@
 		}
 
 		// profile bar
-		await drawProfileBar($profileConfig.barTop, $profileConfig.barOpacity, context);
+		await drawProfileBar(
+			$profileConfig.barTop,
+			$profileConfig.barOpacity,
+			context,
+			$profileConfig.shadowsOpacity
+		);
 
 		// profil type
 		await drawProfile(

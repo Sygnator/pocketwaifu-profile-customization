@@ -12,7 +12,6 @@
 			levelB = Math.round(value / 2) * 2;
 			return 2;
 		} else if (value > 2 && value < 5) {
-			levelB = Math.round(value / 3) * 3;
 			return 3;
 		} else if (value >= 5 && value < 100) {
 			levelB = Math.round(value / 5) * 5;

@@ -30,7 +30,8 @@ export enum ProfileTypeEnum {
 	Cards,
 	MiniGallery,
 	ShowCards,
-	Stats
+	Stats,
+	Img
 }
 
 export enum KarmaState {
