@@ -627,7 +627,8 @@
 			$profileConfig.hasRoundAvatar,
 			nickname,
 			context,
-			$profileConfig.avatarBorder
+			$profileConfig.avatarBorder,
+			$profileConfig.levelBorder
 		);
 
 		// mini waifu card
