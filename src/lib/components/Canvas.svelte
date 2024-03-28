@@ -216,7 +216,6 @@
 		avatarSize: number,
 		avatarBorderColor: string,
 		hasRoundAvatar: boolean,
-		nickname: string,
 		context: CanvasRenderingContext2D,
 		avatarBorder: AvatarBorder = AvatarBorder.None,
 		levelBorder: LevelBorderType = false
@@ -287,6 +286,16 @@
 		if (hasAvatarBorder) {
 			drawProfileAvatarBorder(avatarBorder, levelBorder, context);
 		}
+	}
+
+	async function drawNickAndRank(
+		avatarX: number,
+		avatarSize: number,
+		nickname: string,
+		rank: string,
+		context: CanvasRenderingContext2D
+	) {
+		const tSize = avatarSize + 2 * 2;
 
 		// Nickname & rank
 		let nickX = 27;
@@ -305,7 +314,7 @@
 		);
 		const rankFontSize = 16;
 		await drawText(
-			'Leniwiec',
+			rank,
 			nickX,
 			nickY + 32 + rankFontSize,
 			context,
@@ -495,10 +504,10 @@
 		let oGap = 60;
 		let startX = statsX + 213;
 		let startY = statsY + 18;
-		drawText('Posiadane', startX, startY + 8 - 10, context, '#7f7f7f', 9, 'Lato', 'bold');
-		drawText('Limit', startX + oGap, startY + 8 - 10, context, '#7f7f7f', 9, 'Lato', 'bold');
-		drawText('20691', startX, startY + 15, context, fontColor, 16, 'Lato', 'bold');
-		drawText('99999', startX + oGap, startY + 15, context, fontColor, 16, 'Lato', 'bold');
+		await drawText('Posiadane', startX, startY + 8 - 10, context, '#7f7f7f', 9, 'Lato', 'bold');
+		await drawText('Limit', startX + oGap, startY + 8 - 10, context, '#7f7f7f', 9, 'Lato', 'bold');
+		await drawText('20691', startX, startY + 15, context, fontColor, 16, 'Lato', 'bold');
+		await drawText('99999', startX + oGap, startY + 15, context, fontColor, 16, 'Lato', 'bold');
 
 		// karma
 		const karmaImg = await loadImage(`/profile_assets/${karma}.png`);
@@ -529,10 +538,10 @@
 		const sGap = 84;
 
 		// scalpel
-		GetCurrencyImage('mscal', startX, startY, context, '99');
+		await GetCurrencyImage('mscal', startX, startY, context, '99');
 
 		// scissors
-		GetCurrencyImage('mbor', startX + sGap, startY, context, '10');
+		await GetCurrencyImage('mbor', startX + sGap, startY, context, '10');
 	}
 
 	async function drawStats(
@@ -587,18 +596,18 @@
 	): Promise<void> {
 		switch (profileType) {
 			case ProfileTypeEnum.Cards:
-				drawCards(context, $profileConfig.cardsAmount);
+				await drawCards(context, $profileConfig.cardsAmount);
 				break;
 			case ProfileTypeEnum.MiniGallery:
 			case ProfileTypeEnum.ShowCards:
 				if ($profileConfig.miniGallery)
-					drawMiniGallery(context, $profileConfig.isSmall, true, shadowsOpacity, flip);
+					await drawMiniGallery(context, $profileConfig.isSmall, true, shadowsOpacity, flip);
 
 				if ($profileConfig.cardsStats)
-					drawWaifuProfile(context, true, shadowsOpacity, flip, $profileConfig.karma);
+					await drawWaifuProfile(context, true, shadowsOpacity, flip, $profileConfig.karma);
 				break;
 			case ProfileTypeEnum.Stats:
-				drawStats(
+				await drawStats(
 					context,
 					true,
 					shadowsOpacity,
@@ -618,34 +627,20 @@
 		await fillRect(0, 0, width, height, background, context);
 
 		// Image background
-		const imgBg = await loadImage('/profile_assets/pbg.png');
-		await drawImage(imgBg, 0, 0, width, imgBg.height, context);
+		const imgBg = await loadImage(
+			$profileConfig.background ? $profileConfig.background : '/profile_assets/pbg.png'
+		);
+		await drawImage(imgBg, 0, 0, width, 160, context);
 
 		// Image shadow base
 		const imgBase = await loadImage('/profile_assets/pbase.png');
 		await drawImage(imgBase, 0, 0, imgBase.width, imgBase.height, context);
 
-		// Avatar
-		const avatar = await loadImage('/profile_assets/user/avatar.png');
-
-		const avatarX = 52;
-		const avatarY = 68;
-		const avatarSize = 80;
-
-		const nickname = 'Testowy user';
-
-		await drawAvatar(
-			avatar,
-			avatarX,
-			avatarY,
-			avatarSize,
-			$profileConfig.avatarBorderColor,
-			$profileConfig.hasRoundAvatar,
-			nickname,
-			context,
-			$profileConfig.avatarBorder,
-			$profileConfig.levelBorder
-		);
+		// Image profile
+		if ($profileConfig.image) {
+			const profileImage = await loadImage($profileConfig.image);
+			await drawImage(profileImage, 0, 160, 750, 340, context);
+		}
 
 		// mini waifu card
 		if ($profileConfig.miniWaifu) {
@@ -669,6 +664,40 @@
 			context,
 			$profileConfig.flip
 		);
+
+		// nickname and rank
+		const avatarX = 52;
+		const avatarY = 68;
+		const avatarSize = 80;
+
+		await drawNickAndRank(avatarX, avatarSize, 'Użytkownik', 'Testowy', context);
+
+		// overlay
+		if ($profileConfig.overlay) {
+			const overlay = await loadImage($profileConfig.overlay);
+			await drawImage(overlay, 0, 98, 750, 402, context);
+		}
+
+		// Avatar
+		const avatar = await loadImage('/profile_assets/user/avatar.png');
+
+		await drawAvatar(
+			avatar,
+			avatarX,
+			avatarY,
+			avatarSize,
+			$profileConfig.avatarBorderColor,
+			$profileConfig.hasRoundAvatar,
+			context,
+			$profileConfig.avatarBorder,
+			$profileConfig.levelBorder
+		);
+
+		// premium overlay
+		if ($profileConfig.premiumOverlay) {
+			const premiumOverlay = await loadImage($profileConfig.premiumOverlay);
+			await drawImage(premiumOverlay, 0, 0, 750, 500, context);
+		}
 	}
 
 	onMount(() => {

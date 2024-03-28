@@ -19,6 +19,10 @@ export type ProfileConfigType = {
 	animeStats: boolean;
 	mangaStats: boolean;
 	cardsAmount: number;
+	image: string;
+	background: string;
+	overlay: string;
+	premiumOverlay: string;
 };
 
 export function createProfileConfig(profileConfig: ProfileConfigType) {
@@ -99,6 +103,22 @@ export function createProfileConfig(profileConfig: ProfileConfigType) {
 		update((profileConfig) => ({ ...profileConfig, cardsAmount: cardsAmount }));
 	}
 
+	function setImage(image: string) {
+		update((profileConfig) => ({ ...profileConfig, image: image }));
+	}
+
+	function setBackground(background: string) {
+		update((profileConfig) => ({ ...profileConfig, background: background }));
+	}
+
+	function setOverlay(overlay: string) {
+		update((profileConfig) => ({ ...profileConfig, overlay: overlay }));
+	}
+
+	function setPremiumOverlay(premiumOverlay: string) {
+		update((profileConfig) => ({ ...profileConfig, premiumOverlay: premiumOverlay }));
+	}
+
 	return {
 		subscribe,
 		setProfileConfig,
@@ -118,7 +138,11 @@ export function createProfileConfig(profileConfig: ProfileConfigType) {
 		switchIsSmall,
 		switchAnimeStats,
 		switchMangaStats,
-		setCardsAmount
+		setCardsAmount,
+		setImage,
+		setBackground,
+		setOverlay,
+		setPremiumOverlay
 	};
 }
 
@@ -140,5 +164,9 @@ export const profileConfig = createProfileConfig({
 	isSmall: false,
 	animeStats: true,
 	mangaStats: true,
-	cardsAmount: 12
+	cardsAmount: 12,
+	image: '',
+	background: '',
+	overlay: '',
+	premiumOverlay: ''
 });

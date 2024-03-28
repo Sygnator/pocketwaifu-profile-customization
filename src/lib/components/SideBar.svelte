@@ -8,6 +8,7 @@
 		SidebarWrapper,
 		Toggle,
 		Range,
+		FloatingLabelInput,
 		Label
 	} from 'flowbite-svelte';
 	import { GridSolid } from 'flowbite-svelte-icons';
@@ -93,6 +94,36 @@
 					on:change={() => profileConfig.setShadowsOpacity(shadowsOpacity / 100)}
 				></Range>
 			</Label>
+		</SidebarGroup>
+
+		<SidebarGroup border>
+			<FloatingLabelInput
+				size="small"
+				style="filled"
+				type="text"
+				on:change={(e) => profileConfig.setBackground(e.target.value)}
+				>Tło profilu</FloatingLabelInput
+			>
+			<FloatingLabelInput
+				size="small"
+				style="filled"
+				type="text"
+				on:change={(e) => profileConfig.setImage(e.target.value)}>Obrazek</FloatingLabelInput
+			>
+			<FloatingLabelInput
+				size="small"
+				style="filled"
+				type="text"
+				on:change={(e) => profileConfig.setOverlay(e.target.value)}>Nakładka</FloatingLabelInput
+			>
+			<FloatingLabelInput
+				size="small"
+				style="filled"
+				type="text"
+				on:change={(e) => profileConfig.setPremiumOverlay(e.target.value)}
+			>
+				Ultra nakładka
+			</FloatingLabelInput>
 		</SidebarGroup>
 
 		{#if $profileConfig.profileType == ProfileTypeEnum.Stats}
