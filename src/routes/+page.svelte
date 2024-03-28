@@ -1,9 +1,5 @@
-<script>
-	import { Alert } from 'flowbite-svelte';
+<script lang="ts">
+	import Canvas from '$lib/components/Canvas.svelte';
 </script>
 
-<div class="p-8">
-	<Alert>
-		<span class="font-medium">Profile preview!</span>
-	</Alert>
-</div>
+<Canvas />
