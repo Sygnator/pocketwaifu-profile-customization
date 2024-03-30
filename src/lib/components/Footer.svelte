@@ -4,7 +4,7 @@
 	import { GithubSolid, DiscordSolid } from 'flowbite-svelte-icons';
 </script>
 
-<Footer footerType="socialmedia" class="fixed bottom-0 w-full">
+<Footer footerType="socialmedia" class="fixed bottom-0 z-20 w-full">
 	<div class="sm:flex sm:items-center sm:justify-between">
 		<FooterCopyright href="https://sanakan.pl/" by="Sanakan" year={new Date().getFullYear()} />
 		<div class="mt-4 flex space-x-6 sm:mt-0 sm:justify-center rtl:space-x-reverse">

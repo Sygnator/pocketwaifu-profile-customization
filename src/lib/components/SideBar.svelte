@@ -32,10 +32,10 @@
 	}
 </script>
 
-<Sidebar style="height: 94.3vh" asideClass="float-left">
+<Sidebar asideClass="float-left">
 	<SidebarWrapper
 		style="height: 100%"
-		divClass="overflow-y-auto py-4 px-3 rounded dark:bg-gray-800 float-left"
+		divClass="overflow-y-auto py-4 px-3 rounded dark:bg-gray-800 float-left pb-20"
 	>
 		<SidebarGroup>
 			<SidebarDropdownWrapper label="Styl profilu">

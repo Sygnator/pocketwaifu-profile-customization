@@ -9,7 +9,7 @@
 
 <NavBar />
 <SideBar />
-<main class="overflow-auto p-5" style="text-align: -webkit-center;">
+<main class="overflow-auto p-5" style="text-align: -webkit-center; height: 100vh;">
 	<slot />
 </main>
 <Footer />
