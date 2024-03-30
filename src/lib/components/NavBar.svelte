@@ -4,13 +4,12 @@
 	import DarkModeButton from '$lib/components/DarkModeButton.svelte';
 </script>
 
-<Navbar rounded color="form">
+<Navbar rounded color="form" class="py-0">
 	<NavBrand href="/">
 		<img src="pwlogo.png" class="me-3 h-6 sm:h-9" alt="PocketWaifu Logo" />
 		<span
 			style="font-family: 'Lato'"
-			class="self-center whitespace-nowrap text-xl font-semibold dark:text-white"
-			>Profilator</span
+			class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Profilator</span
 		>
 	</NavBrand>
 	<NavHamburger />
@@ -20,5 +19,7 @@
 		<NavLi href="https://wiki.sanakan.pl/" target="_blank">Wiki</NavLi>
 		<NavLi href="https://skalpel.sanakan.pl/" target="_blank">Skalpelator</NavLi>
 	</NavUl>
-	<DarkModeButton />
+	<NavUl ulClass="text-center my-2 md:my-0">
+		<DarkModeButton />
+	</NavUl>
 </Navbar>
