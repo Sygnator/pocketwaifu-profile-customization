@@ -30,6 +30,13 @@
 			profileConfig.setKarma(KarmaState.Demon);
 		}
 	}
+
+	const handleChange = (configSetter: (value: string) => void) => {
+		return (event: Event) => {
+			const value = (event.target as HTMLInputElement).value;
+			configSetter(value);
+		};
+	};
 </script>
 
 <Sidebar asideClass="float-left">
@@ -101,26 +108,25 @@
 				size="small"
 				style="filled"
 				type="text"
-				on:change={(e) => profileConfig.setBackground(e.target.value)}
-				>Tło profilu</FloatingLabelInput
+				on:change={handleChange(profileConfig.setBackground)}>Tło profilu</FloatingLabelInput
 			>
 			<FloatingLabelInput
 				size="small"
 				style="filled"
 				type="text"
-				on:change={(e) => profileConfig.setImage(e.target.value)}>Obrazek</FloatingLabelInput
+				on:change={handleChange(profileConfig.setImage)}>Obrazek</FloatingLabelInput
 			>
 			<FloatingLabelInput
 				size="small"
 				style="filled"
 				type="text"
-				on:change={(e) => profileConfig.setOverlay(e.target.value)}>Nakładka</FloatingLabelInput
+				on:change={handleChange(profileConfig.setOverlay)}>Nakładka</FloatingLabelInput
 			>
 			<FloatingLabelInput
 				size="small"
 				style="filled"
 				type="text"
-				on:change={(e) => profileConfig.setPremiumOverlay(e.target.value)}
+				on:change={handleChange(profileConfig.setPremiumOverlay)}
 			>
 				Ultra nakładka
 			</FloatingLabelInput>
