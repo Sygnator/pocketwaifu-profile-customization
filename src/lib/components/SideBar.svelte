@@ -32,10 +32,16 @@
 		}
 	}
 
+	const isImageLink = (str: string): boolean => {
+		const regex = /^(http|https):\/\/\S+\.(jpg|jpeg|png|gif)$/;
+		return regex.test(str);
+	};
+
 	const handleChange = (configSetter: (value: string) => void) => {
 		return (event: Event) => {
 			const value = (event.target as HTMLInputElement).value;
-			configSetter(value);
+			if (!value) configSetter("")
+			if (isImageLink(value)) configSetter(value);
 		};
 	};
 </script>
