@@ -164,26 +164,47 @@
 
 		{#if $profileConfig.profileType == ProfileTypeEnum.Stats}
 			<SidebarGroup border>
-				<Toggle checked={$profileConfig.animeStats} on:change={profileConfig.switchAnimeStats}
-					>Pokaż Statystyki Anime</Toggle
+				<Toggle 
+					checked={$profileConfig.animeStats} 
+					on:change={profileConfig.switchAnimeStats}
 				>
-				<Toggle checked={$profileConfig.mangaStats} on:change={profileConfig.switchMangaStats}
-					>Pokaż Statystyki Mangi</Toggle
+					Pokaż Statystyki Anime
+				</Toggle>
+				<Toggle 
+					checked={$profileConfig.mangaStats} 
+					on:change={profileConfig.switchMangaStats}
 				>
-				<Toggle checked={$profileConfig.flip} on:change={profileConfig.switchFlip}
-					>Odwróć układ</Toggle
+					Pokaż Statystyki Mangi
+				</Toggle>
+				<Toggle 
+					checked={$profileConfig.cardsStats} 
+					on:change={profileConfig.switchCardsStats}
 				>
+					Pokaż Karciankę
+				</Toggle>
+				<Toggle 
+					checked={$profileConfig.flip} 
+					on:change={profileConfig.switchFlip}
+				>
+					Odwróć układ
+				</Toggle>
 			</SidebarGroup>
 		{/if}
 
 		{#if $profileConfig.profileType == ProfileTypeEnum.ShowCards}
 			<SidebarGroup border>
-				<Toggle checked={$profileConfig.cardsStats} on:change={profileConfig.switchCardsStats}
-					>Pokaż Karciankę</Toggle
+				<Toggle 
+					checked={$profileConfig.cardsStats} 
+					on:change={profileConfig.switchCardsStats}
 				>
-				<Toggle checked={$profileConfig.miniGallery} on:change={profileConfig.switchMiniGallery}
-					>Pokaż mini galerię</Toggle
+					Pokaż Karciankę
+				</Toggle>
+				<Toggle 
+					checked={$profileConfig.miniGallery} 
+					on:change={profileConfig.switchMiniGallery}
 				>
+					Pokaż mini galerię
+				</Toggle>
 				<Toggle 
 					disabled={$profileConfig.miniGallery == false} 
 					class={`dark:text-gray-${$profileConfig.miniGallery ? "300" : "500"}`} 
