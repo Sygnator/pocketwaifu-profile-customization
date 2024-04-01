@@ -39,6 +39,7 @@
 			checked={$profileConfig.hasRoundAvatar}
 			on:change={profileConfig.switchRoundAvatar}
 			disabled={$profileConfig.avatarBorder != AvatarBorder.None}
+			class={`dark:text-gray-${$profileConfig.avatarBorder != AvatarBorder.None ? "500" : "300"}`}
 		>
 			Okrągły Awatar
 		</Toggle>

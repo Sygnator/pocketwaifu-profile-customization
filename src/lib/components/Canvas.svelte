@@ -615,6 +615,9 @@
 					$profileConfig.mangaStats,
 					$profileConfig.flip
 				);
+				
+				if ($profileConfig.cardsStats)
+					await drawWaifuProfile(context, true, shadowsOpacity, flip, $profileConfig.karma);
 				break;
 			case ProfileTypeEnum.Img:
 			default:

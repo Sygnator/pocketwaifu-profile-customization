@@ -15,10 +15,11 @@
 	import ChooseCustomBorder from './ChooseCustomBorder.svelte';
 	import { profileConfig } from '$lib/profileConfig';
 	import { KarmaState, ProfileTypeEnum } from '$lib';
+	import Tooltip from '$lib/components/Tooltip.svelte';
 	let spanClass = 'flex-1 ms-3 whitespace-nowrap';
 	let openModal = false;
 
-	let cardsAmount = 1;
+	let cardsAmount = 12;
 	let shadowsOpacity = 30;
 
 	function changeKarma() {
@@ -30,6 +31,19 @@
 			profileConfig.setKarma(KarmaState.Demon);
 		}
 	}
+
+	const isImageLink = (str: string): boolean => {
+		const regex = /^(http|https):\/\/\S+\.(jpg|jpeg|png|gif)$/;
+		return regex.test(str);
+	};
+
+	const handleChange = (configSetter: (value: string) => void) => {
+		return (event: Event) => {
+			const value = (event.target as HTMLInputElement).value;
+			if (!value) configSetter("")
+			if (isImageLink(value)) configSetter(value);
+		};
+	};
 </script>
 
 <Sidebar asideClass="float-left">
@@ -101,56 +115,104 @@
 				size="small"
 				style="filled"
 				type="text"
-				on:change={(e) => profileConfig.setBackground(e.target.value)}
-				>Tło profilu</FloatingLabelInput
+				id="b1"
+				on:change={handleChange(profileConfig.setBackground)}
 			>
+				Tło profilu
+			</FloatingLabelInput>
+			<Tooltip content="Rozmiar tła 750×160 px" placement="left" type="auto" trigger="click" />
+			
 			<FloatingLabelInput
 				size="small"
 				style="filled"
 				type="text"
-				on:change={(e) => profileConfig.setImage(e.target.value)}>Obrazek</FloatingLabelInput
+				on:change={handleChange(profileConfig.setImage)}
 			>
+				Obrazek
+			</FloatingLabelInput>
+			<Tooltip content="Rozmiar obrazka 750×340 px" placement="left" type="auto" trigger="click" />
+			
 			<FloatingLabelInput
 				size="small"
 				style="filled"
 				type="text"
-				on:change={(e) => profileConfig.setOverlay(e.target.value)}>Nakładka</FloatingLabelInput
+				on:change={handleChange(profileConfig.setOverlay)}
 			>
+				Nakładka
+			</FloatingLabelInput>
+			<Tooltip
+				content="Rozmiar nakładki 750×402 px"
+				placement="left"
+				type="auto"
+				trigger="click"
+			/>
 			<FloatingLabelInput
 				size="small"
 				style="filled"
 				type="text"
-				on:change={(e) => profileConfig.setPremiumOverlay(e.target.value)}
+				on:change={handleChange(profileConfig.setPremiumOverlay)}
 			>
 				Ultra nakładka
 			</FloatingLabelInput>
+			<Tooltip
+				content="Rozmiar nakładki 750×500 px"
+				placement="left"
+				type="auto"
+				trigger="click"
+			/>
 		</SidebarGroup>
 
 		{#if $profileConfig.profileType == ProfileTypeEnum.Stats}
 			<SidebarGroup border>
-				<Toggle checked={$profileConfig.animeStats} on:change={profileConfig.switchAnimeStats}
-					>Pokaż Statystyki Anime</Toggle
+				<Toggle 
+					checked={$profileConfig.animeStats} 
+					on:change={profileConfig.switchAnimeStats}
 				>
-				<Toggle checked={$profileConfig.mangaStats} on:change={profileConfig.switchMangaStats}
-					>Pokaż Statystyki Mangi</Toggle
+					Pokaż Statystyki Anime
+				</Toggle>
+				<Toggle 
+					checked={$profileConfig.mangaStats} 
+					on:change={profileConfig.switchMangaStats}
 				>
-				<Toggle checked={$profileConfig.flip} on:change={profileConfig.switchFlip}
-					>Odwróć układ</Toggle
+					Pokaż Statystyki Mangi
+				</Toggle>
+				<Toggle 
+					checked={$profileConfig.cardsStats} 
+					on:change={profileConfig.switchCardsStats}
 				>
+					Pokaż Karciankę
+				</Toggle>
+				<Toggle 
+					checked={$profileConfig.flip} 
+					on:change={profileConfig.switchFlip}
+				>
+					Odwróć układ
+				</Toggle>
 			</SidebarGroup>
 		{/if}
 
 		{#if $profileConfig.profileType == ProfileTypeEnum.ShowCards}
 			<SidebarGroup border>
-				<Toggle checked={$profileConfig.cardsStats} on:change={profileConfig.switchCardsStats}
-					>Pokaż Karciankę</Toggle
+				<Toggle 
+					checked={$profileConfig.cardsStats} 
+					on:change={profileConfig.switchCardsStats}
 				>
-				<Toggle checked={$profileConfig.miniGallery} on:change={profileConfig.switchMiniGallery}
-					>Pokaż mini galerię</Toggle
+					Pokaż Karciankę
+				</Toggle>
+				<Toggle 
+					checked={$profileConfig.miniGallery} 
+					on:change={profileConfig.switchMiniGallery}
 				>
-				<Toggle checked={$profileConfig.isSmall} on:change={profileConfig.switchIsSmall}
-					>Ilość kart</Toggle
+					Pokaż mini galerię
+				</Toggle>
+				<Toggle 
+					disabled={$profileConfig.miniGallery == false} 
+					class={`dark:text-gray-${$profileConfig.miniGallery ? "300" : "500"}`} 
+					checked={$profileConfig.isSmall} on:change={profileConfig.switchIsSmall}
 				>
+					Ilość kart
+				</Toggle>
+				<Tooltip content="Ilość kart w minigalerii - 6 lub 2" placement="left" type="auto" />
 				<Toggle checked={$profileConfig.flip} on:change={profileConfig.switchFlip}
 					>Odwróć układ</Toggle
 				>
