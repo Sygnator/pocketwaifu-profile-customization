@@ -148,16 +148,16 @@ export function createProfileConfig(profileConfig: ProfileConfigType) {
 
 // basic configuration
 export const profileConfig = createProfileConfig({
-	profileType: ProfileTypeEnum.ShowCards,
+	profileType: ProfileTypeEnum.Stats,
 	karma: KarmaState.Angel,
-	avatarBorder: AvatarBorder.Crows,
+	avatarBorder: AvatarBorder.None,
 	miniWaifu: false,
-	flip: true,
+	flip: false,
 	barTop: false,
-	barOpacity: true,
+	barOpacity: false,
 	shadowsOpacity: 0.3,
 	levelBorder: false,
-	avatarBorderColor: '#ff1122',
+	avatarBorderColor: '#5f83ff',
 	hasRoundAvatar: false,
 	cardsStats: true,
 	miniGallery: true,

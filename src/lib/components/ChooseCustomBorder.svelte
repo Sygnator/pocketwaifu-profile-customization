@@ -2,6 +2,9 @@
 	import { AvatarBorder, type LevelBorderType } from '$lib';
 	import { profileConfig } from '$lib/profileConfig';
 	import { Modal, Card, Range, Tooltip, Label, Toggle, Input } from 'flowbite-svelte';
+	import CircleNone from '$lib/assets/CircleNone.svg?raw';
+	import SquareNone from '$lib/assets/SquareNone.svg?raw';
+
 	export let openModal: boolean;
 	let level = 0;
 	let levelB: LevelBorderType = false;
@@ -32,14 +35,17 @@
 	outsideclose
 	size="lg"
 	placement="top-center"
-	on:close={() => profileConfig.setLevelBorder(levelB)}
+	on:close={() => {
+		profileConfig.setLevelBorder(levelB);
+		profileConfig.setAvatarBorderColor(color);
+	}}
 >
 	<div class="flex flex-row items-center justify-between">
 		<Toggle
 			checked={$profileConfig.hasRoundAvatar}
 			on:change={profileConfig.switchRoundAvatar}
 			disabled={$profileConfig.avatarBorder != AvatarBorder.None}
-			class={`dark:text-gray-${$profileConfig.avatarBorder != AvatarBorder.None ? "500" : "300"}`}
+			class={`dark:text-gray-${$profileConfig.avatarBorder != AvatarBorder.None ? '500' : '300'}`}
 		>
 			Okrągły Awatar
 		</Toggle>
@@ -85,11 +91,21 @@
 						}
 					}}
 				>
-					<img
-						class="object-fit: contain max-w-30 place-self-center p-2"
-						src={`/profile_assets/avatar_border/${avatarBorder == AvatarBorder.Base && levelB != false ? 'level/' + levelB : avatarBorder}.png`}
-						alt={avatarBorder}
-					/>
+					{#if avatarBorder != AvatarBorder.None}
+						<img
+							class="object-fit: contain max-w-30 place-self-center p-2"
+							src={`/profile_assets/avatar_border/${avatarBorder == AvatarBorder.Base && levelB != false ? 'level/' + levelB : avatarBorder}.png`}
+							alt={avatarBorder}
+						/>
+					{:else}
+						<div class="h-10/12 w-10/12" style={`stroke: ${color};`}>
+							{#if $profileConfig.hasRoundAvatar}
+								{@html CircleNone}
+							{:else}
+								{@html SquareNone}
+							{/if}
+						</div>
+					{/if}
 					<p class="mt-2 pb-1">{avatarBorder}</p>
 				</Card>
 			{/each}

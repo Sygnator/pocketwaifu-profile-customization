@@ -40,7 +40,7 @@
 	const handleChange = (configSetter: (value: string) => void) => {
 		return (event: Event) => {
 			const value = (event.target as HTMLInputElement).value;
-			if (!value) configSetter("")
+			if (!value) configSetter('');
 			if (isImageLink(value)) configSetter(value);
 		};
 	};
@@ -64,9 +64,14 @@
 					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.Stats)}
 				/>
 				<SidebarDropdownItem
-					label="Duża galeria"
-					active={$profileConfig.profileType == ProfileTypeEnum.Cards}
-					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.Cards)}
+					label="Statystyki na obrazku"
+					active={$profileConfig.profileType == ProfileTypeEnum.StatsOnImg}
+					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.StatsOnImg)}
+				/>
+				<SidebarDropdownItem
+					label="Obrazek na statystykach"
+					active={$profileConfig.profileType == ProfileTypeEnum.StatsWithImg}
+					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.StatsWithImg)}
 				/>
 				<SidebarDropdownItem
 					label="Obrazek"
@@ -74,9 +79,24 @@
 					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.Img)}
 				/>
 				<SidebarDropdownItem
-					label="Karcianka"
-					active={$profileConfig.profileType == ProfileTypeEnum.ShowCards}
-					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.ShowCards)}
+					label="Duża galeria"
+					active={$profileConfig.profileType == ProfileTypeEnum.Cards}
+					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.Cards)}
+				/>
+				<SidebarDropdownItem
+					label="Duża galeria na obrazku"
+					active={$profileConfig.profileType == ProfileTypeEnum.CardsOnImg}
+					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.CardsOnImg)}
+				/>
+				<SidebarDropdownItem
+					label="Galeria z karcianką"
+					active={$profileConfig.profileType == ProfileTypeEnum.MiniGallery}
+					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.MiniGallery)}
+				/>
+				<SidebarDropdownItem
+					label="Galeria z karcianką na obrazku"
+					active={$profileConfig.profileType == ProfileTypeEnum.MiniGalleryOnImg}
+					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.MiniGalleryOnImg)}
 				/>
 			</SidebarDropdownWrapper>
 			<SidebarItem label="Ramka Avatara" {spanClass} on:click={() => (openModal = true)}>
@@ -95,19 +115,21 @@
 			<Toggle checked={$profileConfig.barTop} on:change={profileConfig.switchBarTop}
 				>Położenie paska</Toggle
 			>
-			<Toggle checked={$profileConfig.barOpacity} on:change={profileConfig.switchBarOpacity}
-				>Przeźroczystość paska</Toggle
-			>
-			<Label>
-				Cienie: {`${shadowsOpacity < 10 ? '  ' : shadowsOpacity < 100 ? ' ' : ''}${shadowsOpacity + '%'}`}
-				<Range
-					min="0"
-					max="100"
-					step="1"
-					bind:value={shadowsOpacity}
-					on:change={() => profileConfig.setShadowsOpacity(shadowsOpacity / 100)}
-				></Range>
-			</Label>
+			{#if $profileConfig.profileType == ProfileTypeEnum.StatsOnImg || $profileConfig.profileType == ProfileTypeEnum.StatsWithImg || $profileConfig.profileType == ProfileTypeEnum.CardsOnImg || $profileConfig.profileType == ProfileTypeEnum.MiniGalleryOnImg}
+				<Toggle checked={$profileConfig.barOpacity} on:change={profileConfig.switchBarOpacity}
+					>Przeźroczystość paska</Toggle
+				>
+				<Label>
+					Cienie: {`${shadowsOpacity < 10 ? '  ' : shadowsOpacity < 100 ? ' ' : ''}${shadowsOpacity + '%'}`}
+					<Range
+						min="0"
+						max="100"
+						step="1"
+						bind:value={shadowsOpacity}
+						on:change={() => profileConfig.setShadowsOpacity(shadowsOpacity / 100)}
+					></Range>
+				</Label>
+			{/if}
 		</SidebarGroup>
 
 		<SidebarGroup border>
@@ -121,17 +143,7 @@
 				Tło profilu
 			</FloatingLabelInput>
 			<Tooltip content="Rozmiar tła 750×160 px" placement="left" type="auto" trigger="click" />
-			
-			<FloatingLabelInput
-				size="small"
-				style="filled"
-				type="text"
-				on:change={handleChange(profileConfig.setImage)}
-			>
-				Obrazek
-			</FloatingLabelInput>
-			<Tooltip content="Rozmiar obrazka 750×340 px" placement="left" type="auto" trigger="click" />
-			
+
 			<FloatingLabelInput
 				size="small"
 				style="filled"
@@ -140,12 +152,8 @@
 			>
 				Nakładka
 			</FloatingLabelInput>
-			<Tooltip
-				content="Rozmiar nakładki 750×402 px"
-				placement="left"
-				type="auto"
-				trigger="click"
-			/>
+			<Tooltip content="Rozmiar nakładki 750×402 px" placement="left" type="auto" trigger="click" />
+
 			<FloatingLabelInput
 				size="small"
 				style="filled"
@@ -154,61 +162,56 @@
 			>
 				Ultra nakładka
 			</FloatingLabelInput>
-			<Tooltip
-				content="Rozmiar nakładki 750×500 px"
-				placement="left"
-				type="auto"
-				trigger="click"
-			/>
+			<Tooltip content="Rozmiar nakładki 750×500 px" placement="left" type="auto" trigger="click" />
+
+			{#if $profileConfig.profileType == ProfileTypeEnum.Img || $profileConfig.profileType == ProfileTypeEnum.StatsOnImg || $profileConfig.profileType == ProfileTypeEnum.StatsWithImg || $profileConfig.profileType == ProfileTypeEnum.CardsOnImg || $profileConfig.profileType == ProfileTypeEnum.MiniGalleryOnImg}
+				<FloatingLabelInput
+					size="small"
+					style="filled"
+					type="text"
+					on:change={handleChange(profileConfig.setImage)}
+				>
+					Obrazek
+				</FloatingLabelInput>
+				<Tooltip
+					content="Rozmiar obrazka 750×340 px"
+					placement="left"
+					type="auto"
+					trigger="click"
+				/>
+			{/if}
 		</SidebarGroup>
 
 		{#if $profileConfig.profileType == ProfileTypeEnum.Stats}
 			<SidebarGroup border>
-				<Toggle 
-					checked={$profileConfig.animeStats} 
-					on:change={profileConfig.switchAnimeStats}
-				>
+				<Toggle checked={$profileConfig.animeStats} on:change={profileConfig.switchAnimeStats}>
 					Pokaż Statystyki Anime
 				</Toggle>
-				<Toggle 
-					checked={$profileConfig.mangaStats} 
-					on:change={profileConfig.switchMangaStats}
-				>
+				<Toggle checked={$profileConfig.mangaStats} on:change={profileConfig.switchMangaStats}>
 					Pokaż Statystyki Mangi
 				</Toggle>
-				<Toggle 
-					checked={$profileConfig.cardsStats} 
-					on:change={profileConfig.switchCardsStats}
-				>
+				<Toggle checked={$profileConfig.cardsStats} on:change={profileConfig.switchCardsStats}>
 					Pokaż Karciankę
 				</Toggle>
-				<Toggle 
-					checked={$profileConfig.flip} 
-					on:change={profileConfig.switchFlip}
-				>
+				<Toggle checked={$profileConfig.flip} on:change={profileConfig.switchFlip}>
 					Odwróć układ
 				</Toggle>
 			</SidebarGroup>
 		{/if}
 
-		{#if $profileConfig.profileType == ProfileTypeEnum.ShowCards}
+		{#if $profileConfig.profileType == ProfileTypeEnum.MiniGallery}
 			<SidebarGroup border>
-				<Toggle 
-					checked={$profileConfig.cardsStats} 
-					on:change={profileConfig.switchCardsStats}
-				>
+				<Toggle checked={$profileConfig.cardsStats} on:change={profileConfig.switchCardsStats}>
 					Pokaż Karciankę
 				</Toggle>
-				<Toggle 
-					checked={$profileConfig.miniGallery} 
-					on:change={profileConfig.switchMiniGallery}
-				>
+				<Toggle checked={$profileConfig.miniGallery} on:change={profileConfig.switchMiniGallery}>
 					Pokaż mini galerię
 				</Toggle>
-				<Toggle 
-					disabled={$profileConfig.miniGallery == false} 
-					class={`dark:text-gray-${$profileConfig.miniGallery ? "300" : "500"}`} 
-					checked={$profileConfig.isSmall} on:change={profileConfig.switchIsSmall}
+				<Toggle
+					disabled={$profileConfig.miniGallery == false}
+					class={`dark:text-gray-${$profileConfig.miniGallery ? '300' : '500'}`}
+					checked={$profileConfig.isSmall}
+					on:change={profileConfig.switchIsSmall}
 				>
 					Ilość kart
 				</Toggle>
