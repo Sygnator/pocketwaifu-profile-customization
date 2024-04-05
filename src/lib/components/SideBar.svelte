@@ -40,7 +40,7 @@
 	const handleChange = (configSetter: (value: string) => void) => {
 		return (event: Event) => {
 			const value = (event.target as HTMLInputElement).value;
-			if (!value) configSetter("")
+			if (!value) configSetter('');
 			if (isImageLink(value)) configSetter(value);
 		};
 	};
@@ -121,7 +121,7 @@
 				Tło profilu
 			</FloatingLabelInput>
 			<Tooltip content="Rozmiar tła 750×160 px" placement="left" type="auto" trigger="click" />
-			
+
 			<FloatingLabelInput
 				size="small"
 				style="filled"
@@ -131,7 +131,7 @@
 				Obrazek
 			</FloatingLabelInput>
 			<Tooltip content="Rozmiar obrazka 750×340 px" placement="left" type="auto" trigger="click" />
-			
+
 			<FloatingLabelInput
 				size="small"
 				style="filled"
@@ -140,12 +140,7 @@
 			>
 				Nakładka
 			</FloatingLabelInput>
-			<Tooltip
-				content="Rozmiar nakładki 750×402 px"
-				placement="left"
-				type="auto"
-				trigger="click"
-			/>
+			<Tooltip content="Rozmiar nakładki 750×402 px" placement="left" type="auto" trigger="click" />
 			<FloatingLabelInput
 				size="small"
 				style="filled"
@@ -154,38 +149,21 @@
 			>
 				Ultra nakładka
 			</FloatingLabelInput>
-			<Tooltip
-				content="Rozmiar nakładki 750×500 px"
-				placement="left"
-				type="auto"
-				trigger="click"
-			/>
+			<Tooltip content="Rozmiar nakładki 750×500 px" placement="left" type="auto" trigger="click" />
 		</SidebarGroup>
 
 		{#if $profileConfig.profileType == ProfileTypeEnum.Stats}
 			<SidebarGroup border>
-				<Toggle 
-					checked={$profileConfig.animeStats} 
-					on:change={profileConfig.switchAnimeStats}
-				>
+				<Toggle checked={$profileConfig.animeStats} on:change={profileConfig.switchAnimeStats}>
 					Pokaż Statystyki Anime
 				</Toggle>
-				<Toggle 
-					checked={$profileConfig.mangaStats} 
-					on:change={profileConfig.switchMangaStats}
-				>
+				<Toggle checked={$profileConfig.mangaStats} on:change={profileConfig.switchMangaStats}>
 					Pokaż Statystyki Mangi
 				</Toggle>
-				<Toggle 
-					checked={$profileConfig.cardsStats} 
-					on:change={profileConfig.switchCardsStats}
-				>
+				<Toggle checked={$profileConfig.cardsStats} on:change={profileConfig.switchCardsStats}>
 					Pokaż Karciankę
 				</Toggle>
-				<Toggle 
-					checked={$profileConfig.flip} 
-					on:change={profileConfig.switchFlip}
-				>
+				<Toggle checked={$profileConfig.flip} on:change={profileConfig.switchFlip}>
 					Odwróć układ
 				</Toggle>
 			</SidebarGroup>
@@ -193,22 +171,17 @@
 
 		{#if $profileConfig.profileType == ProfileTypeEnum.ShowCards}
 			<SidebarGroup border>
-				<Toggle 
-					checked={$profileConfig.cardsStats} 
-					on:change={profileConfig.switchCardsStats}
-				>
+				<Toggle checked={$profileConfig.cardsStats} on:change={profileConfig.switchCardsStats}>
 					Pokaż Karciankę
 				</Toggle>
-				<Toggle 
-					checked={$profileConfig.miniGallery} 
-					on:change={profileConfig.switchMiniGallery}
-				>
+				<Toggle checked={$profileConfig.miniGallery} on:change={profileConfig.switchMiniGallery}>
 					Pokaż mini galerię
 				</Toggle>
-				<Toggle 
-					disabled={$profileConfig.miniGallery == false} 
-					class={`dark:text-gray-${$profileConfig.miniGallery ? "300" : "500"}`} 
-					checked={$profileConfig.isSmall} on:change={profileConfig.switchIsSmall}
+				<Toggle
+					disabled={$profileConfig.miniGallery == false}
+					class={`dark:text-gray-${$profileConfig.miniGallery ? '300' : '500'}`}
+					checked={$profileConfig.isSmall}
+					on:change={profileConfig.switchIsSmall}
 				>
 					Ilość kart
 				</Toggle>

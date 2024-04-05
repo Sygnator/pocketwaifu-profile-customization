@@ -22,33 +22,60 @@
 
 	let context: CanvasRenderingContext2D;
 
-	function loadImage(src: string): Promise<HTMLImageElement> {
+	/**
+	 * Load an image from the specified source.
+	 *
+	 * @param source The URL or path to the image.
+	 * @returns *HTMLImageElement* when the image is loaded successfully.
+	 */
+	function loadImage(source: string): Promise<HTMLImageElement> {
 		return new Promise((resolve, reject) => {
-			const img = new Image();
-			img.onload = () => resolve(img);
-			img.onerror = reject;
-			img.src = src;
+			const image = new Image();
+			image.onload = () => resolve(image);
+			image.onerror = reject;
+			image.src = source;
 		});
 	}
 
+	/**
+	 * Draw an image.
+	 *
+	 * @param image The *HTML image element* to be drawn.
+	 * @param x The X coordinate of the top left corner of the image.
+	 * @param y The Y coordinate of the top left corner of the image.
+	 * @param w The width of the image.
+	 * @param h The height of the image.
+	 * @param context The canvas rendering context.
+	 */
 	async function drawImage(
 		image: HTMLImageElement,
-		dx: number,
-		dy: number,
-		dw: number,
-		dh: number,
+		x: number,
+		y: number,
+		w: number,
+		h: number,
 		context: CanvasRenderingContext2D
 	): Promise<void> {
 		await image.decode();
-		context.drawImage(image, dx, dy, dw, dh);
+		context.drawImage(image, x, y, w, h);
 	}
 
+	/**
+	 * Draw a **rounded** image.
+	 *
+	 * @param image The *HTML image element* to be drawn.
+	 * @param x The X coordinate of the top left corner of the image.
+	 * @param y The Y coordinate of the top left corner of the image.
+	 * @param w The width of the image.
+	 * @param h The height of the image.
+	 * @param radius The radius of the rounded corners. **Specified in pixels.**
+	 * @param context The canvas rendering context.
+	 */
 	async function drawRoundedImage(
 		image: HTMLImageElement,
-		dx: number,
-		dy: number,
-		dw: number,
-		dh: number,
+		x: number,
+		y: number,
+		w: number,
+		h: number,
 		radius: number,
 		context: CanvasRenderingContext2D
 	): Promise<void> {
@@ -59,15 +86,25 @@
 		context.clearRect(0, 0, 0, 0);
 
 		context.beginPath();
-		context.arc(dx + radius, dy + radius, radius, 0, Math.PI * 2);
+		context.arc(x + radius, y + radius, radius, 0, Math.PI * 2);
 		context.closePath();
 		context.clip();
 
-		context.drawImage(image, dx, dy, dw, dh);
+		context.drawImage(image, x, y, w, h);
 
 		context.restore();
 	}
 
+	/**
+	 * Fills a rectangle.
+	 *
+	 * @param x The X coordinate of the top left corner of the rectangle.
+	 * @param y The Y coordinate of the top left corner of the rectangle.
+	 * @param w The width of the rectangle.
+	 * @param h The height of the rectangle.
+	 * @param color The fill color in hexadecimal format (#RRGGBB).
+	 * @param context The canvas rendering context.
+	 */
 	async function fillRect(
 		x: number,
 		y: number,
@@ -81,7 +118,7 @@
 	}
 
 	/**
-	 * Fills a rounded rectangle.
+	 * Fills a **rounded** rectangle.
 	 *
 	 * @param x The X coordinate of the top left corner of the rectangle.
 	 * @param y The Y coordinate of the top left corner of the rectangle.
@@ -115,6 +152,19 @@
 		context.fill();
 	}
 
+	/**
+	 * Draw text onto the canvas.
+	 *
+	 * @param text The text to be drawn.
+	 * @param x The X coordinate of the starting point for the text.
+	 * @param y The Y coordinate of the starting point for the text.
+	 * @param context The canvas rendering context.
+	 * @param color The color of the text in hexadecimal format (#RRGGBB).
+	 * @param size The size of the text (in pixels).
+	 * @param font The font family for the text.
+	 * @param fontStyle The style of the font (**bold**, *italic*, or nothing).
+	 * @param weight The font weight (100, 300, 400, 700, or 900).
+	 */
 	async function drawText(
 		text: string,
 		x: number,
@@ -142,71 +192,78 @@
 		levelBorder: LevelBorderType,
 		context: CanvasRenderingContext2D
 	): Promise<void> {
-		let abImg: HTMLImageElement;
+		let avatarBorderImage: HTMLImageElement;
 		if (avatarBorder === AvatarBorder.Base && levelBorder) {
-			abImg = await loadImage(`/profile_assets/avatar_border/level/${levelBorder}.png`);
+			avatarBorderImage = await loadImage(`/profile_assets/avatar_border/level/${levelBorder}.png`);
 		} else {
-			abImg = await loadImage(`/profile_assets/avatar_border/${avatarBorder}.png`);
+			avatarBorderImage = await loadImage(`/profile_assets/avatar_border/${avatarBorder}.png`);
 		}
 
-		let pos = { x: 24, y: 39 };
+		let position = { x: 24, y: 39 };
 
-		// get positon
+		// get position of specific avatar border
 		switch (avatarBorder) {
 			case AvatarBorder.Bow:
-				pos = { x: 26, y: 48 };
+				position = { x: 26, y: 48 };
 				break;
 			case AvatarBorder.Dzedai:
-				pos = { x: 23, y: 38 };
+				position = { x: 23, y: 38 };
 				break;
 			case AvatarBorder.Water:
-				pos = { x: 35, y: 58 };
+				position = { x: 35, y: 58 };
 				break;
 			case AvatarBorder.Base:
-				pos = { x: 43, y: 59 };
+				position = { x: 43, y: 59 };
 				break;
 			case AvatarBorder.Crows:
-				pos = { x: 25, y: 42 };
+				position = { x: 25, y: 42 };
 				break;
 			case AvatarBorder.Metal:
-				pos = { x: 49, y: 65 };
+				position = { x: 49, y: 65 };
 				break;
 			case AvatarBorder.RedThinLeaves:
-				pos = { x: 30, y: 44 };
+				position = { x: 30, y: 44 };
 				break;
 			case AvatarBorder.Skull:
-				pos = { x: 28, y: 47 };
+				position = { x: 28, y: 47 };
 				break;
 			case AvatarBorder.Fire:
-				pos = { x: 45, y: 60 };
+				position = { x: 45, y: 60 };
 				break;
 			case AvatarBorder.Promium:
-				pos = { x: 38, y: 53 };
+				position = { x: 38, y: 53 };
 				break;
 			case AvatarBorder.Ice:
-				pos = { x: 44, y: 61 };
+				position = { x: 44, y: 61 };
 				break;
 			case AvatarBorder.Gold:
-				pos = { x: 18, y: 33 };
+				position = { x: 18, y: 33 };
 				break;
 			case AvatarBorder.Red:
-				pos = { x: 40, y: 58 };
+				position = { x: 40, y: 58 };
 				break;
 			case AvatarBorder.Rainbow:
-				pos = { x: 44, y: 60 };
+				position = { x: 44, y: 60 };
 				break;
 			case AvatarBorder.Pink:
-				pos = { x: 38, y: 53 };
+				position = { x: 38, y: 53 };
 				break;
 			case AvatarBorder.Simple:
-				pos = { x: 36, y: 53 };
+				position = { x: 36, y: 53 };
 				break;
 			default:
-				pos = { x: 24, y: 39 };
+				position = { x: 24, y: 39 };
 				break;
 		}
 
-		drawImage(abImg, pos.x, pos.y, abImg.width, abImg.height, context);
+		drawImage(
+			avatarBorderImage,
+			position.x,
+			position.y,
+			avatarBorderImage.width,
+			avatarBorderImage.height,
+			context
+		);
 	}
 
 	async function drawAvatar(
@@ -615,7 +672,7 @@
 					$profileConfig.mangaStats,
 					$profileConfig.flip
 				);
-				
+
 				if ($profileConfig.cardsStats)
 					await drawWaifuProfile(context, true, shadowsOpacity, flip, $profileConfig.karma);
 				break;
