@@ -27,11 +27,14 @@ export type LevelBorderType =
 	| 200;
 
 export enum ProfileTypeEnum {
-	Cards,
-	MiniGallery,
-	ShowCards,
 	Stats,
-	Img
+	StatsOnImg,
+	StatsWithImg,
+	Img,
+	Cards,
+	CardsOnImg,
+	MiniGalleryOnImg,
+	MiniGallery
 }
 
 export enum KarmaState {

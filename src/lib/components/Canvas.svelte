@@ -651,22 +651,28 @@
 		context: CanvasRenderingContext2D,
 		flip: boolean = false
 	): Promise<void> {
+		let isOnImg =
+			profileType === ProfileTypeEnum.StatsOnImg ||
+			profileType === ProfileTypeEnum.MiniGalleryOnImg;
 		switch (profileType) {
 			case ProfileTypeEnum.Cards:
+			case ProfileTypeEnum.CardsOnImg:
 				await drawCards(context, $profileConfig.cardsAmount);
 				break;
 			case ProfileTypeEnum.MiniGallery:
-			case ProfileTypeEnum.ShowCards:
+			case ProfileTypeEnum.MiniGalleryOnImg:
 				if ($profileConfig.miniGallery)
-					await drawMiniGallery(context, $profileConfig.isSmall, true, shadowsOpacity, flip);
+					await drawMiniGallery(context, $profileConfig.isSmall, isOnImg, shadowsOpacity, flip);
 
 				if ($profileConfig.cardsStats)
-					await drawWaifuProfile(context, true, shadowsOpacity, flip, $profileConfig.karma);
+					await drawWaifuProfile(context, isOnImg, shadowsOpacity, flip, $profileConfig.karma);
 				break;
 			case ProfileTypeEnum.Stats:
+			case ProfileTypeEnum.StatsOnImg:
+			case ProfileTypeEnum.StatsWithImg:
 				await drawStats(
 					context,
-					true,
+					isOnImg,
 					shadowsOpacity,
 					$profileConfig.animeStats,
 					$profileConfig.mangaStats,
@@ -674,7 +680,12 @@
 				);
 
 				if ($profileConfig.cardsStats)
-					await drawWaifuProfile(context, true, shadowsOpacity, flip, $profileConfig.karma);
+					await drawWaifuProfile(context, isOnImg, shadowsOpacity, flip, $profileConfig.karma);
+
+				if ($profileConfig.image && profileType === ProfileTypeEnum.StatsWithImg) {
+					const profileImage = await loadImage($profileConfig.image);
+					await drawImage(profileImage, 0, 160, 750, 340, context);
+				}
 				break;
 			case ProfileTypeEnum.Img:
 			default:
@@ -697,7 +708,13 @@
 		await drawImage(imgBase, 0, 0, imgBase.width, imgBase.height, context);
 
 		// Image profile
-		if ($profileConfig.image) {
+		if (
+			$profileConfig.image &&
+			$profileConfig.profileType != ProfileTypeEnum.Stats &&
+			$profileConfig.profileType != ProfileTypeEnum.StatsWithImg &&
+			$profileConfig.profileType != ProfileTypeEnum.Cards &&
+			$profileConfig.profileType != ProfileTypeEnum.MiniGallery
+		) {
 			const profileImage = await loadImage($profileConfig.image);
 			await drawImage(profileImage, 0, 160, 750, 340, context);
 		}
@@ -709,20 +726,20 @@
 			await drawImage(imgWaifu, 622, 34, 85, 120, context);
 		}
 
-		// profile bar
-		await drawProfileBar(
-			$profileConfig.barTop,
-			$profileConfig.barOpacity,
-			context,
-			$profileConfig.shadowsOpacity
-		);
-
 		// profil type
 		await drawProfile(
 			$profileConfig.profileType,
 			$profileConfig.shadowsOpacity,
 			context,
 			$profileConfig.flip
+		);
+
+		// profile bar
+		await drawProfileBar(
+			$profileConfig.barTop,
+			$profileConfig.barOpacity,
+			context,
+			$profileConfig.shadowsOpacity
 		);
 
 		// nickname and rank
