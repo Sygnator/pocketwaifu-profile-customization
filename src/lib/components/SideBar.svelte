@@ -196,6 +196,24 @@
 				<Toggle checked={$profileConfig.flip} on:change={profileConfig.switchFlip}>
 					Odwróć układ
 				</Toggle>
+				<SidebarItem label="Karma" {spanClass} on:click={changeKarma}>
+					<svelte:fragment slot="icon">
+						<img src={`/profile_assets/${$profileConfig.karma}.png`} alt="karma" />
+					</svelte:fragment>
+					<svelte:fragment slot="subtext">
+						<span
+							class="ms-3 inline-flex items-center justify-center rounded-full bg-gray-200 px-2 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+						>
+							{#if $profileConfig.karma == KarmaState.Angel}
+								Dodatnia
+							{:else if $profileConfig.karma == KarmaState.Demon}
+								Ujemna
+							{:else}
+								Neutralna
+							{/if}
+						</span>
+					</svelte:fragment>
+				</SidebarItem>
 			</SidebarGroup>
 		{/if}
 
