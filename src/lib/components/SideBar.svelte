@@ -64,19 +64,14 @@
 					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.Stats)}
 				/>
 				<SidebarDropdownItem
-					label="Statystyki na obrazku"
-					active={$profileConfig.profileType == ProfileTypeEnum.StatsOnImg}
-					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.StatsOnImg)}
+					label="Obrazek"
+					active={$profileConfig.profileType == ProfileTypeEnum.Img}
+					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.Img)}
 				/>
 				<SidebarDropdownItem
 					label="Obrazek na statystykach"
 					active={$profileConfig.profileType == ProfileTypeEnum.StatsWithImg}
 					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.StatsWithImg)}
-				/>
-				<SidebarDropdownItem
-					label="Obrazek"
-					active={$profileConfig.profileType == ProfileTypeEnum.Img}
-					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.Img)}
 				/>
 				<SidebarDropdownItem
 					label="Duża galeria"
@@ -87,6 +82,11 @@
 					label="Duża galeria na obrazku"
 					active={$profileConfig.profileType == ProfileTypeEnum.CardsOnImg}
 					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.CardsOnImg)}
+				/>
+				<SidebarDropdownItem
+					label="Statystyki na obrazku"
+					active={$profileConfig.profileType == ProfileTypeEnum.StatsOnImg}
+					on:click={() => profileConfig.setProfileType(ProfileTypeEnum.StatsOnImg)}
 				/>
 				<SidebarDropdownItem
 					label="Galeria z karcianką"
