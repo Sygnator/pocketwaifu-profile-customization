@@ -61,7 +61,7 @@ You can preview the production build with `pnpm run preview`.
 
 The `master` branch is automatically deployed to the server upon any changes.
 
-## Contributions are welcome!
+## Contributions are welcome
 
 1. Fork the repository.
 1. Create a new branch (`git checkout -b feature/improvement`)
