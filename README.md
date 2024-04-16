@@ -6,26 +6,46 @@
 [![Formatted with Prettier](https://img.shields.io/badge/Formatted%20with-Prettier-ff69b4)](https://prettier.io/)
 [![Linted with ESLint](https://img.shields.io/badge/Linted%20with-ESLint-4B32C3)](https://eslint.org/)
 
-This is a [sanakan](https://github.com/MZKNEK/sanakan) profile customization and preview page written in SvelteKit using Canvas that allows users to customize their profiles for the [PocketWaifu](https://github.com/Sygnator/waifu-site) display on discord.
+This is a sanakan profile customization and preview page.
+Written in SvelteKit using Canvas.
+Allows users to customize their profiles for the PocketWaifu display on discord.
+
+Reference:
+
+- [Sanakan](https://github.com/MZKNEK/sanakan)
+- [PocketWaifu](https://github.com/Sygnator/waifu-site)
 
 ## Developing
 
-Once you've clone the repository and installed dependencies with `pnpm install`, start a development server:
+1. Clone git repository
 
-```bash
-pnpm dev
-```
+   ```sh
+   git clone git@github.com:Sygnator/pocketwaifu-profile-customization.git
+   ```
+
+1. Install dependencies
+
+   ```sh
+   pnpm Install
+   ```
+
+1. Start a development server
+
+   ```sh
+   pnpm dev
+   ```
 
 ### Additional Scripts
 
-1. To check for linting issues:
+1. To check for linting issues
 
-   ```bash
+   ```sh
    pnpm run lint
    ```
 
-1. To format the code:
-   ```bash
+1. To format the code
+
+   ```sh
    pnpm run format
    ```
 
@@ -33,7 +53,7 @@ pnpm dev
 
 To create a production version of your app:
 
-```bash
+```sh
 pnpm run build
 ```
 

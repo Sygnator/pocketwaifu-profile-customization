@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Code checkout
-      uses: actions/checkout@v4
+      - name: Code checkout
+        uses: actions/checkout@v4
 
-    - name: markdownlint-cli
-      uses: DavidAnson/markdownlint-cli2-action@v14
-      with:
-        globs: '**/*.md'
+      - name: markdownlint-cli
+        uses: DavidAnson/markdownlint-cli2-action@v14
+        with:
+          globs: '**/*.md'
