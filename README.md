@@ -1,38 +1,50 @@
-# create-svelte
+# Profilator
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+[![Made with SvelteKit](https://img.shields.io/badge/Made%20with-SvelteKit-orange)](https://kit.svelte.dev/)
+[![Styled with Tailwind CSS](https://img.shields.io/badge/Styled%20with-Tailwind%20CSS-blue)](https://tailwindcss.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Yes-blue)](https://www.typescriptlang.org/)
+[![Formatted with Prettier](https://img.shields.io/badge/Formatted%20with-Prettier-ff69b4)](https://prettier.io/)
+[![Linted with ESLint](https://img.shields.io/badge/Linted%20with-ESLint-4B32C3)](https://eslint.org/)
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+This is a [sanakan](https://github.com/MZKNEK/sanakan) profile customization and preview page written in SvelteKit using Canvas that allows users to customize their profiles for the [PocketWaifu](https://github.com/Sygnator/waifu-site) display on discord.
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've clone the repository and installed dependencies with `pnpm install`, start a development server:
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+pnpm dev
 ```
+
+### Additional Scripts
+
+1. To check for linting issues:
+
+   ```bash
+   pnpm run lint
+   ```
+
+1. To format the code:
+   ```bash
+   pnpm run format
+   ```
 
 ## Building
 
 To create a production version of your app:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
-You can preview the production build with `npm run preview`.
+You can preview the production build with `pnpm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+The `master` branch is automatically deployed to the server upon any changes.
+
+## Contributions are welcome!
+
+1. Fork the repository.
+1. Create a new branch (`git checkout -b feature/improvement`)
+1. Commit your changes (`git commit -m 'Add some feature'`)
+1. Push to the branch (`git push origin feature/improvement`)
+1. Create a new Pull Request.
