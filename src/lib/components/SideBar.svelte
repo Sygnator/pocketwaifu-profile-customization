@@ -19,6 +19,8 @@
 	let spanClass = 'flex-1 ms-3 whitespace-nowrap';
 	let openModal = false;
 
+	let imageUrl = '';
+
 	let cardsAmount = 12;
 	let shadowsOpacity = 30;
 
@@ -169,6 +171,7 @@
 					size="small"
 					style="filled"
 					type="text"
+					bind:value={imageUrl}
 					on:change={handleChange(profileConfig.setImage)}
 				>
 					Obrazek
