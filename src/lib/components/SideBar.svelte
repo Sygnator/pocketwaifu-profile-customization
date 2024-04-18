@@ -185,14 +185,32 @@
 			{/if}
 		</SidebarGroup>
 
-		{#if $profileConfig.profileType == ProfileTypeEnum.Stats}
-			<SidebarGroup border>
+		<SidebarGroup border>
+			{#if $profileConfig.profileType == ProfileTypeEnum.Stats || $profileConfig.profileType == ProfileTypeEnum.StatsOnImg || $profileConfig.profileType == ProfileTypeEnum.StatsWithImg}
 				<Toggle checked={$profileConfig.animeStats} on:change={profileConfig.switchAnimeStats}>
 					Pokaż Statystyki Anime
 				</Toggle>
 				<Toggle checked={$profileConfig.mangaStats} on:change={profileConfig.switchMangaStats}>
 					Pokaż Statystyki Mangi
 				</Toggle>
+			{/if}
+
+			{#if $profileConfig.profileType == ProfileTypeEnum.MiniGallery || $profileConfig.profileType == ProfileTypeEnum.MiniGalleryOnImg}
+				<Toggle checked={$profileConfig.miniGallery} on:change={profileConfig.switchMiniGallery}>
+					Pokaż mini galerię
+				</Toggle>
+				<Toggle
+					disabled={$profileConfig.miniGallery == false}
+					class={`dark:text-gray-${$profileConfig.miniGallery ? '300' : '500'}`}
+					checked={$profileConfig.isSmall}
+					on:change={profileConfig.switchIsSmall}
+				>
+					Ilość kart
+				</Toggle>
+				<Tooltip content="Ilość kart w minigalerii - 6 lub 2" placement="left" type="auto" />
+			{/if}
+
+			{#if $profileConfig.profileType != ProfileTypeEnum.Img && $profileConfig.profileType != ProfileTypeEnum.Cards && $profileConfig.profileType != ProfileTypeEnum.CardsOnImg}
 				<Toggle checked={$profileConfig.cardsStats} on:change={profileConfig.switchCardsStats}>
 					Pokaż Karciankę
 				</Toggle>
@@ -217,52 +235,9 @@
 						</span>
 					</svelte:fragment>
 				</SidebarItem>
-			</SidebarGroup>
-		{/if}
+			{/if}
 
-		{#if $profileConfig.profileType == ProfileTypeEnum.MiniGallery}
-			<SidebarGroup border>
-				<Toggle checked={$profileConfig.cardsStats} on:change={profileConfig.switchCardsStats}>
-					Pokaż Karciankę
-				</Toggle>
-				<Toggle checked={$profileConfig.miniGallery} on:change={profileConfig.switchMiniGallery}>
-					Pokaż mini galerię
-				</Toggle>
-				<Toggle
-					disabled={$profileConfig.miniGallery == false}
-					class={`dark:text-gray-${$profileConfig.miniGallery ? '300' : '500'}`}
-					checked={$profileConfig.isSmall}
-					on:change={profileConfig.switchIsSmall}
-				>
-					Ilość kart
-				</Toggle>
-				<Tooltip content="Ilość kart w minigalerii - 6 lub 2" placement="left" type="auto" />
-				<Toggle checked={$profileConfig.flip} on:change={profileConfig.switchFlip}
-					>Odwróć układ</Toggle
-				>
-				<SidebarItem label="Karma" {spanClass} on:click={changeKarma}>
-					<svelte:fragment slot="icon">
-						<img src={`/profile_assets/${$profileConfig.karma}.png`} alt="karma" />
-					</svelte:fragment>
-					<svelte:fragment slot="subtext">
-						<span
-							class="ms-3 inline-flex items-center justify-center rounded-full bg-gray-200 px-2 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-						>
-							{#if $profileConfig.karma == KarmaState.Angel}
-								Dodatnia
-							{:else if $profileConfig.karma == KarmaState.Demon}
-								Ujemna
-							{:else}
-								Neutralna
-							{/if}
-						</span>
-					</svelte:fragment>
-				</SidebarItem>
-			</SidebarGroup>
-		{/if}
-
-		{#if $profileConfig.profileType == ProfileTypeEnum.Cards}
-			<SidebarGroup border>
+			{#if $profileConfig.profileType == ProfileTypeEnum.Cards || $profileConfig.profileType == ProfileTypeEnum.CardsOnImg}
 				<Label>
 					Ilość kart: {cardsAmount < 10 ? '0' + cardsAmount : cardsAmount}
 					<Range
@@ -273,8 +248,8 @@
 						on:change={() => profileConfig.setCardsAmount(cardsAmount)}
 					></Range>
 				</Label>
-			</SidebarGroup>
-		{/if}
+			{/if}
+		</SidebarGroup>
 	</SidebarWrapper>
 </Sidebar>
 <ChooseCustomBorder bind:openModal />
