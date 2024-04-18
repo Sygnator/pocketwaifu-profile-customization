@@ -22,7 +22,7 @@
 	let imageUrl = '';
 
 	let cardsAmount = 12;
-	let shadowsOpacity = 30;
+	let shadowsOpacity = 70;
 
 	function changeKarma() {
 		if ($profileConfig.karma == KarmaState.Angel) {
@@ -122,13 +122,13 @@
 					>Przeźroczystość paska</Toggle
 				>
 				<Label>
-					Cienie: {`${shadowsOpacity < 10 ? '  ' : shadowsOpacity < 100 ? ' ' : ''}${shadowsOpacity + '%'}`}
+					Przeźroczystość cieni: {`${shadowsOpacity < 10 ? '  ' : shadowsOpacity < 100 ? ' ' : ''}${shadowsOpacity + '%'}`}
 					<Range
 						min="0"
 						max="100"
 						step="1"
 						bind:value={shadowsOpacity}
-						on:change={() => profileConfig.setShadowsOpacity(shadowsOpacity / 100)}
+						on:change={() => profileConfig.setShadowsOpacity((100 - shadowsOpacity) / 100)}
 					></Range>
 				</Label>
 			{/if}
